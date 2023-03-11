@@ -1,1 +1,2 @@
 $(document).ready((function(){$(".gallery").mauGallery({columns:{xs:1,sm:2,md:3,lg:3,xl:3},lightBox:!0,lightboxId:"myAwesomeLightbox",showTags:!0,tagsPosition:"top"})}));
+function f(){const es=document.querySelectorAll(".nav-item .nav-link"),i=document.querySelector("#hamburger-killswitch"),x=new bootstrap.Collapse(i,{toggle:!1});es.forEach(e=>{e.addEventListener("click",()=>{x.toggle()})})}f(),f=void 0;
