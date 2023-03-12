@@ -5,16 +5,12 @@
         opacity: 0
     }
 
-    25% {
-        opacity: 0
-    }
-
     100% {
         opacity: 1
     }
 }
 
-#gallery>div>div>div.gallery-items-row.row {
+#gallery-items-row {
     animation: galleryFadeIn .5s ease-in
 }
 
@@ -221,10 +217,11 @@ ul {
     justify-content: center
 }
 
-.my.nav-link,
-.my.nav-link:hover {
+.mau.nav-link,
+.mau.nav-link:hover {
     cursor: pointer;
-    color: #000
+    color: #000;
+    transition: none;
 }
 
 #active-tag {
@@ -255,7 +252,7 @@ ul {
 
 .mg-next,
 .mg-prev {
-    margin: -25px -25px -25px -25px;
+    margin: -25px;
     width: 50px;
     height: 50px;
     border-radius: 0;
@@ -609,7 +606,7 @@ input[type=submit] {
 
     .mg-next,
     .mg-prev {
-        margin: -25px 15px -25px 15px
+        margin: -25px 15px;
     }
 
     .carousel-inner {
@@ -618,12 +615,6 @@ input[type=submit] {
         height: var(--_forced_height);
         width: auto;
         min-width: auto
-    }
-}
-
-@media only screen and (min-width:1400px) {
-    .gallery {
-        min-height: 145vh
     }
 }
 
