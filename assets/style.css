@@ -275,30 +275,27 @@ ul {
   margin: 0 auto 0 auto
 }
 
-.quote {
-  margin: auto;
-  padding-block: 3.5em
-}
-
 .quote__text {
   font-family: Spectral;
   font-style: italic;
   text-align: justify;
   font-weight: 300;
   font-size: 2.4em;
-  margin-bottom: .75em
 }
 
 .quote__author {
   font-family: Spectral;
   font-weight: 800;
-  font-size: 1.3em
+  font-size: 1.3em;
+  line-height: 1.3em
 }
 
 .quote {
   width: 86%;
   transform: scale(1.035);
-  transition: transform .75s
+  transition: transform .75s;
+  margin: auto;
+  padding-block: 5.6em
 }
 
 .service p {
@@ -351,7 +348,7 @@ ul {
 
 #services-section~.quote {
   width: 840px;
-  min-height: 370px;
+  min-height: 232px;
   max-width: 68%;
   min-width: 780px;
 }
@@ -451,19 +448,19 @@ input[type=submit] {
 
 #contact, #services, #galerie, #a-propos {
   position: relative;
-  height: 0;
+  height: 0
 }
 
 #a-propos {
-  bottom: 100px;
+  bottom: 100px
 }
 
 #galerie {
-  bottom: 42px;
+  bottom: 42px
 }
 
 #services {
-  bottom: 100px;
+  bottom: 99px
 }
 
 @media (max-width: 1200px) {
@@ -613,6 +610,7 @@ input[type=submit] {
   .quote {
     width: 350px;
     height: auto;
+    padding-block: 3.5em;
     transform: none;
     transition: transform .4s
   }
@@ -646,6 +644,15 @@ input[type=submit] {
 }
 
 @media (max-width: 767px) {
+  .nav-item {
+    padding-block: 4.5em;
+    transform: scale(1.2);
+  }
+
+  .social-link>* {
+    margin-top: 5px;
+  }
+
   #a-propos {
     bottom: 224px;
   }
