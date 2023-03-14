@@ -10,7 +10,7 @@
   }
 }
 
-#gallery-section-items-row {
+#gallery-items-row {
   animation: galleryFadeIn .5s ease-in
 }
 
@@ -446,9 +446,17 @@ input[type=submit] {
   padding: .5em 1em
 }
 
-#contact, #services, #galerie, #a-propos {
+#contact,
+#services,
+#galerie,
+#a-propos {
   position: relative;
-  height: 0
+  height: 0;
+  width: 0;
+  min-height: 0;
+  max-height: 0;
+  min-width: 0;
+  max-width: 0
 }
 
 #a-propos {
@@ -525,7 +533,7 @@ input[type=submit] {
   #contact {
     bottom: 99px;
   }
-  
+
   #about-section,
   #contact-section {
     padding-inline: 2em;
@@ -644,29 +652,27 @@ input[type=submit] {
 }
 
 @media (max-width: 767px) {
-  .nav-item {
-    padding-block: 4.5em;
+  .navbar .nav-item {
+    display: flex;
+    min-height: 63px;
+    align-items: center;
     transform: scale(1.2);
   }
 
-  .social-link>* {
-    margin-top: 5px;
-  }
-
   #a-propos {
-    bottom: 224px;
+    bottom: 391px;
   }
 
   #galerie {
-    bottom: 192px;
+    bottom: 362px;
   }
 
   #services {
-    bottom: 220px;
+    bottom: 390px;
   }
 
   #contact {
-    bottom: 220px;
+    bottom: 390px;
   }
 }
 
