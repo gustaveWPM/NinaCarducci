@@ -633,7 +633,12 @@ input[type=submit] {
 
   .gallery .nav {
     flex-direction: column;
-    text-align: center
+    text-align: center;
+    transform: scale(1.0125);
+  }
+
+  .gallery .nav button {
+    width: 100%;
   }
 
   .mg-next,
