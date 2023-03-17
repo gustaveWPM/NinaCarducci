@@ -70,14 +70,19 @@ ul {
 }
 
 .carousel-indicators-container {
-  padding: 5px;
+  padding: 0 5px 0 5px;
   border-radius: 15px;
   border: none
 }
 
-.carousel-indicators-container {
-  padding: 0 5px 0 5px;
-  outline: 0
+.carousel-control-prev .carousel-control-prev-icon, .carousel-control-next .carousel-control-next-icon {
+  transition: all .25s ease-in;
+}
+
+.carousel-control-prev:focus-within .carousel-control-prev-icon, .carousel-control-next:focus-within .carousel-control-next-icon {
+  transform: scale(1.8);
+  border: solid 2px white;
+  transition: all .25s ease-in;
 }
 
 .top-header {
