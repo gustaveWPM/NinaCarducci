@@ -7,7 +7,7 @@ Project made during an _OpenClassrooms_ bootcamp.
 
 #### Demo
 
-[https://gustavewpm.github.io/OC-NinaCarducci/](https://gustavewpm.github.io/OC-NinaCarducci/)
+[https://gustavewpm.github.io/OC-Nina-Carducci/](https://gustavewpm.github.io/OC-Nina-Carducci/)
 
 ---
 
