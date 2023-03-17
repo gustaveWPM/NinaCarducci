@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
       lightBox: true,
       lightboxId: 'myAwesomeLightbox',
       showTags: true,
-      tagsPosition: 'top'
+      tagsPosition: 'top',
+      prevImgButtonLabel: 'Image précédente',
+      nextImgButtonLabel: 'Image suivante'
     };
     mauGallery(opt);
   }
@@ -26,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const forceToCollapseElements = document.querySelectorAll('.navbar .nav-item .nav-link, .trigger-navbar-collapse-onclick');
       const ctxTargetElement = document.querySelector('#navbar-hamburger-killswitch');
       const bsCollapse = new bootstrap.Collapse(ctxTargetElement, config = { toggle: false });
-  
+
       forceToCollapseElements.forEach(element => {
         element.addEventListener('click', () => {
           if (!skipCollapse()) {

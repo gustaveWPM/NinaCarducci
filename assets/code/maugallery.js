@@ -11,8 +11,8 @@ function mauGallery(opt = {}) {
     showTags: true,
     tagsPosition: 'bottom',
     navigation: true,
-    prevImgButtonLabel: 'Image précédente',
-    nextImgButtonLabel: 'Image suivante'
+    prevImgButtonLabel: 'Previous image',
+    nextImgButtonLabel: 'Next image'
   };
   const tagsSet = new Set();
 
@@ -239,8 +239,8 @@ function mauGallery(opt = {}) {
             <div class="modal-content">
               <div class="modal-body">
                 <img id="${lightboxImgId}" style="user-select:none;-webkit-user-select:none;" class="img-fluid" alt="" />
-                ${navigation ? `<button class="mg-prev" tabindex="1" style="border:none;cursor:pointer;position:absolute;top:50%;left:-15px;background:white;user-select:none;-webkit-user-select:none;"><span><</span><span class="visually-hidden">${prevImgBtnLabel}</span></button>` : '<span style="display:none;" />'}
-                ${navigation ? `<button class="mg-next" tabindex="2" style="border:none;cursor:pointer;position:absolute;top:50%;right:-15px;background:white;user-select:none;-webkit-user-select:none;}"><span>></span><span class="visually-hidden">${nextImgBtnLabel}</span></button>` : '<span style="display:none;" />'}
+                ${navigation ? `<button aria-label="${prevImgBtnLabel}" class="mg-prev" tabindex="1" style="border:none;cursor:pointer;position:absolute;top:50%;left:-15px;background:white;user-select:none;-webkit-user-select:none;"><span><</span></button>` : '<span style="display:none;" />'}
+                ${navigation ? `<button aria-label="${nextImgBtnLabel}" class="mg-next" tabindex="2" style="border:none;cursor:pointer;position:absolute;top:50%;right:-15px;background:white;user-select:none;-webkit-user-select:none;}"><span>></span></button>` : '<span style="display:none;" />'}
               </div>
             </div>
           </div>
