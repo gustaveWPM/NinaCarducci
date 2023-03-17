@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tagsPosition: 'top',
       prevImgButtonLabel: 'Image précédente',
       nextImgButtonLabel: 'Image suivante',
-      disableFiltersButtonLabel: 'Tous'
+      disableFiltersButtonLabel: 'Tout'
     };
     mauGallery(opt);
   }
