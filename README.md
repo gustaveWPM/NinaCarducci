@@ -1,6 +1,10 @@
-# Hello world
+# Optimisation SEO, debug et amélioration de l'accessibilité du site web de Nina Carducci
 
-{ToDo: write this README.md}
+## You have never done code optimization for the PageSpeed scores?
+
+I didn't either...  
+This is my first [PageSpeed](https://pagespeed.web.dev) optimization.  
+This project was also an introduction to web accessibility.  
 
 Project made during an _OpenClassrooms_ bootcamp.  
 [Learning path: _Développeur Web_](https://openclassrooms.com/fr/paths/717-developpeur-web)
@@ -8,6 +12,13 @@ Project made during an _OpenClassrooms_ bootcamp.
 #### Demo
 
 [https://gustavewpm.github.io/OC-Nina-Carducci/](https://gustavewpm.github.io/OC-Nina-Carducci/)
+
+#### Report/Changelog
+
+[Click here to read the project report (FR 🇫🇷)](https://drive.google.com/drive/folders/1H6xHVrBw5YJsnqYypYSN2wPCBuY7zvh5)
+
+### Associated projects
+[mauGallery Without JQuery](https://github.com/gustaveWPM/mauGallery-without-jquery)
 
 ---
 
