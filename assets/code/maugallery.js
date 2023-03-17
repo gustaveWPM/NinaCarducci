@@ -15,6 +15,8 @@ function mauGallery(opt = {}) {
     nextImgButtonLabel: 'Next image',
     disableFiltersButtonLabel: 'All'
   };
+  let memoCurX = 0;
+  let memoCurY = 0;
   const tagsSet = new Set();
 
   function injectMau(target, options) {
@@ -247,6 +249,8 @@ function mauGallery(opt = {}) {
 
       const modal = document.querySelector(`#${options.lightboxId}`);
       modal.addEventListener('shown.bs.modal', () => {
+        memoCurX = window.scrollX;
+        memoCurY = window.scrollY;
         if (options.navigation) {
           const buttons = modal.querySelectorAll('button');
           let index = 1;
@@ -266,6 +270,16 @@ function mauGallery(opt = {}) {
           }
         }
         document.removeEventListener('keydown', handleKeyDown);
+        setTimeout(() => {
+          const oldScrollBehavior = document.documentElement.style.scrollBehavior;
+          document.documentElement.style.scrollBehavior = 'auto !important;'
+          window.scrollTo({
+            top: memoCurY,
+            left: memoCurX,
+            behavior: 'auto'
+          });
+          document.documentElement.style.scrollBehavior = oldScrollBehavior;
+        }, 1);
       });
     }
 

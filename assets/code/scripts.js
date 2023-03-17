@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const forceToCollapseElements = document.querySelectorAll('.navbar .nav-item .nav-link, .trigger-navbar-collapse-onclick');
       const ctxTargetElement = document.querySelector('#navbar-hamburger-killswitch');
       const bsCollapse = new bootstrap.Collapse(ctxTargetElement, config = { toggle: false });
-      console.log(bsCollapse);
 
       forceToCollapseElements.forEach(element => {
         element.addEventListener('click', () => {
