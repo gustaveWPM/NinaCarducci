@@ -232,19 +232,19 @@ ul {
   transition: none;
 }
 
-#active-tag {
+.mau#active-tag {
   color: #fff;
   background-color: #666130;
   border-radius: 0
 }
 
-.item-column {
+.mau.item-column {
   position: relative;
   margin-bottom: 0 !important;
   padding: 0
 }
 
-.item-column::after {
+.mau.item-column::after {
   content: "";
   display: block;
   padding-bottom: 100%
