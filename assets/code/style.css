@@ -10,7 +10,7 @@
   }
 }
 
-#gallery-items-row {
+.mau#gallery-items-row {
   animation: galleryFadeIn .5s ease-in
 }
 
