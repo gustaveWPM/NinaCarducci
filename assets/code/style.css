@@ -22,6 +22,10 @@ blockquote {
   margin: 0;
 }
 
+.modal {
+  transition: all .5s;
+}
+
 * {
   box-sizing: border-box;
   min-width: 0;
@@ -61,11 +65,13 @@ ul {
   border: none
 }
 
-.carousel-control-prev .carousel-control-prev-icon, .carousel-control-next .carousel-control-next-icon {
+.carousel-control-prev .carousel-control-prev-icon,
+.carousel-control-next .carousel-control-next-icon {
   transition: all .25s ease-in;
 }
 
-.carousel-control-prev:focus-within .carousel-control-prev-icon, .carousel-control-next:focus-within .carousel-control-next-icon {
+.carousel-control-prev:focus-within .carousel-control-prev-icon,
+.carousel-control-next:focus-within .carousel-control-next-icon {
   transform: scale(1.8);
   border: solid 2px white;
   transition: all .25s ease-in;
