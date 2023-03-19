@@ -1,19 +1,5 @@
 @import url(https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;1,300;1,400;1,800&display=swap);
 
-@keyframes galleryFadeIn {
-  0% {
-    opacity: 0
-  }
-
-  100% {
-    opacity: 1
-  }
-}
-
-.mau#gallery-items-row {
-  animation: galleryFadeIn .5s ease-in
-}
-
 h1 {
   margin-bottom: 0
 }
@@ -227,7 +213,6 @@ ul {
 
 .mau.nav-link,
 .mau.nav-link:hover {
-  cursor: pointer;
   color: #000;
   transition: none;
 }
@@ -256,27 +241,6 @@ ul {
   height: 100%;
   object-fit: cover;
   padding: .5em
-}
-
-.mau.mg-next,
-.mau.mg-prev {
-  margin: -25px;
-  width: 50px;
-  height: 50px;
-  border-radius: 0;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  font-size: 24px;
-  transition: margin-right .5s, margin-left .5s
-}
-
-.mau.modal-dialog {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  margin: 0 auto 0 auto
 }
 
 .quote__text {
@@ -644,11 +608,6 @@ input[type=submit] {
 
   #maugallery.gallery .nav button {
     width: 100%;
-  }
-
-  .mau.mg-next,
-  .mau.mg-prev {
-    margin: -25px 15px;
   }
 
   .carousel-inner {

@@ -2,21 +2,33 @@ function mauGallery(opt = {}) {
   const mauGallerydefaults = {
     columns: 3,
     lightBox: true,
+    showTags: true,
+    navigation: true,
+    tagsPosition: 'bottom',
+    prevImgButtonLabel: 'Previous image',
+    nextImgButtonLabel: 'Next image',
+    disableFiltersButtonLabel: 'All',
+    mauPrefixClass: 'mau',
     lightboxId: 'mauDefaultLightboxId',
     galleryRootNodeId: 'maugallery',
     galleryItemsRowId: 'gallery-items-row',
     filtersActiveTagId: 'active-tag',
     lightboxImgId: 'lightboxImage',
     galleryItemClass: 'gallery-item',
-    mauPrefixClass: 'mau',
     modalTriggerClass: 'modal-trigger',
-    showTags: true,
-    tagsPosition: 'bottom',
-    navigation: true,
-    prevImgButtonLabel: 'Previous image',
-    nextImgButtonLabel: 'Next image',
-    disableFiltersButtonLabel: 'All'
+    animationName: 'mauGalleryFadeInDefaultAnimationName',
+    animationKeyframes: '{0% {opacity: 0} 5% {opacity: 0} 100% {opacity: 1}}',
+    animationDuration: '.5s',
+    animationEasing: 'ease-in',
   };
+
+  const style = (() => {
+    let style = document.createElement('style');
+    style.appendChild(document.createTextNode(''));
+    document.head.appendChild(style);
+    return style;
+  })();
+
   let memoCurX = 0;
   let memoCurY = 0;
   let memoScrollBehavior = null;
@@ -67,13 +79,6 @@ function mauGallery(opt = {}) {
     }
 
     function wrapItemInColumn(element, options) {
-      const style = (() => {
-        let style = document.createElement('style');
-        style.appendChild(document.createTextNode(''));
-        document.head.appendChild(style);
-        return style;
-      })();
-
       function doWrap(element, wrapperOpen, wrapperClose) {
         orgHtml = element.outerHTML;
         newHtml = wrapperOpen + orgHtml + wrapperClose;
@@ -436,8 +441,8 @@ function mauGallery(opt = {}) {
                 <picture>
                   <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" id="${lightboxImgId}" class="${mauPrefixClass} img-fluid" alt="" />
                 </picture>
-                ${navigation ? `<button aria-label="${prevImgBtnLabel}" class="${mauPrefixClass} mg-prev" style="touch-action:manipulation;border:none;cursor:pointer;position:absolute;top:50%;left:-15px;background:#fff;"><span><</span></button>` : '<span style="display:none;" />'}
-                ${navigation ? `<button aria-label="${nextImgBtnLabel}" class="${mauPrefixClass} mg-next" style="touch-action:manipulation;border:none;cursor:pointer;position:absolute;top:50%;right:-15px;background:#fff;}"><span>></span></button>` : '<span style="display:none;" />'}
+                ${navigation ? `<button aria-label="${prevImgBtnLabel}" class="${mauPrefixClass} mg-prev" style="touch-action:manipulation;border:none;left:-15px;background:#fff;"><span><</span></button>` : '<span style="display:none;" />'}
+                ${navigation ? `<button aria-label="${nextImgBtnLabel}" class="${mauPrefixClass} mg-next" style="touch-action:manipulation;border:none;right:-15px;background:#fff;}"><span>></span></button>` : '<span style="display:none;" />'}
               </div>
             </div>
           </div>
@@ -454,7 +459,25 @@ function mauGallery(opt = {}) {
       }
     }
 
+    function appendCSS(options) {
+      const animationKeyframesRepresentation = `@keyframes ${options.animationName} ${options.animationKeyframes}`;
+      const animationRuleValue = `${options.animationName} ${options.animationDuration} ${options.animationEasing}`;
+      const dispatchAnimOnGallery = `.${options.mauPrefixClass}#${options.galleryItemsRowId} {animation: ${animationRuleValue}}`;
+      const dispatchAnimOnModal = `.${options.mauPrefixClass}.modal {animation: ${animationRuleValue}}`;
+      const centerTheModalRule = `.${options.mauPrefixClass}.modal-dialog {display: flex; align-items: center; justify-content: center; height: 100%; margin: 0 auto 0 auto}`;
+      const navigationButtonsResponsiveRule = `@media (max-width: 1000px) {.mau.mg-next, .mau.mg-prev {margin:-25px 15px;}}`;
+      const navigationButtonsRule = `.${options.mauPrefixClass}.mg-next, .${options.mauPrefixClass}.mg-prev {display:flex;position:absolute;top:50%;margin:-25px;width:50px;height:50px;border-radius:0;justify-content:center;align-items:center;font-size:24px;transition:margin-right .5s, margin-left .5s;}`;
+
+      style.sheet.insertRule(animationKeyframesRepresentation, 0);
+      style.sheet.insertRule(dispatchAnimOnGallery, 0);
+      style.sheet.insertRule(dispatchAnimOnModal, 0);
+      style.sheet.insertRule(centerTheModalRule, 0);
+      style.sheet.insertRule(navigationButtonsResponsiveRule, 0);
+      style.sheet.insertRule(navigationButtonsRule, 0);
+    }
+
     function process(target, options) {
+      appendCSS(options);
       createRowWrapper(target, options);
       if (options.lightBox) {
         createLightBox(target, options);
