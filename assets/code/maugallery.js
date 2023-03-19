@@ -9,6 +9,7 @@ function mauGallery(opt = {}) {
     lightboxImgId: 'lightboxImage',
     galleryItemClass: 'gallery-item',
     mauPrefixClass: 'mau',
+    modalTriggerClass: 'modal-trigger',
     showTags: true,
     tagsPosition: 'bottom',
     navigation: true,
@@ -26,12 +27,12 @@ function mauGallery(opt = {}) {
     function isOnMobile() {
       if (memoIsOnMobile === null) {
         memoIsOnMobile = (navigator.userAgent.match(/Android/i)
-        || navigator.userAgent.match(/webOS/i)
-        || navigator.userAgent.match(/iPhone/i)
-        || navigator.userAgent.match(/iPad/i)
-        || navigator.userAgent.match(/iPod/i)
-        || navigator.userAgent.match(/BlackBerry/i)
-        || navigator.userAgent.match(/Windows Phone/i));
+          || navigator.userAgent.match(/webOS/i)
+          || navigator.userAgent.match(/iPhone/i)
+          || navigator.userAgent.match(/iPad/i)
+          || navigator.userAgent.match(/iPod/i)
+          || navigator.userAgent.match(/BlackBerry/i)
+          || navigator.userAgent.match(/Windows Phone/i));
       }
       return memoIsOnMobile;
     }
@@ -60,7 +61,7 @@ function mauGallery(opt = {}) {
       }, delay);
     }
 
-    function snapCameraToSavedPosition(delay = 2) {
+    function snapCameraToSavedPosition(delay = 1) {
       snapCamera(memoCurX, memoCurY, delay);
       clearSaveCurrentCameraPositionSideEffects();
     }
@@ -73,7 +74,7 @@ function mauGallery(opt = {}) {
         return style;
       })();
 
-      function doWrap(element, wrapperOpen, wrapperClose, options) {
+      function doWrap(element, wrapperOpen, wrapperClose) {
         orgHtml = element.outerHTML;
         newHtml = wrapperOpen + orgHtml + wrapperClose;
         element.outerHTML = newHtml;
@@ -81,8 +82,8 @@ function mauGallery(opt = {}) {
 
       const columns = options.columns;
       const mauPrefixClass = options.mauPrefixClass;
-      const isImg = element.tagName === 'IMG';
-      const injectModalTrigger = isImg ? `data-bs-toggle="modal" data-bs-target=".${options.mauPrefixClass}#${options.lightboxId}"` : '';
+      const isImg = element.tagName === 'IMG' || element.tagName === 'PICTURE';
+      const injectModalTrigger = `data-bs-toggle="modal" data-bs-target=".${mauPrefixClass}#${options.lightboxId}" class="${mauPrefixClass} ${options.modalTriggerClass}"`;
       let wrapperOpen = '';
       let wrapperClose = '';
       if (isOnMobile()) {
@@ -96,7 +97,7 @@ function mauGallery(opt = {}) {
           wrapperOpen = `<div tabindex="0" class='${mauPrefixClass} item-column mb-4 col-${Math.ceil(12 / columns)}'><div style="width:100%;height:100%;">`;
           wrapperClose = '</div></div>';
         }
-        doWrap(element, wrapperOpen, wrapperClose, options);
+        doWrap(element, wrapperOpen, wrapperClose);
       } else if (typeof columns === 'object') {
         let columnClasses = '';
         if (columns.xs) {
@@ -121,29 +122,89 @@ function mauGallery(opt = {}) {
           wrapperOpen = `<div tabindex="0" class='${mauPrefixClass} item-column mb-4${columnClasses}'><div style="width:100%;height:100%;">`;
           wrapperClose = '</div></div>';
         }
-        doWrap(element, wrapperOpen, wrapperClose, options);
+        doWrap(element, wrapperOpen, wrapperClose);
       } else {
         console.error(`Columns should be defined as numbers or objects. ${typeof columns} is not supported.`);
       }
     }
 
-    function prevImage(options) {
+    function clearModalPictureSources(modal) {
+      const currentModalPictureElement = modal.querySelector('picture');
+      const currentModalPictureSources = currentModalPictureElement.querySelectorAll('source');
+      currentModalPictureSources.forEach(source => currentModalPictureElement.removeChild(source));
+    }
+
+    function clearOldPictureSources(modal, oldSources) {
+      const currentModalPictureElement = modal.querySelector('picture');
+      oldSources.forEach(() => {
+        const nextElementToRemove = currentModalPictureElement.querySelector('source:last-of-type');
+        currentModalPictureElement.removeChild(nextElementToRemove);
+      });
+    }
+
+    function doUpdateImageElementInModal(currentModalImg, newImageElement) {
+      const srcset = newImageElement.getAttribute('srcset') || null;
+      const sizes = newImageElement.getAttribute('sizes') || null;
+      const alt = newImageElement.getAttribute('alt');
+      const src = newImageElement.getAttribute('src');
+      currentModalImg.setAttribute('alt', alt);
+      currentModalImg.setAttribute('src', src);
+      if (srcset) {
+        currentModalImg.setAttribute('srcset', srcset);
+      }
+      if (sizes) {
+        currentModalImg.setAttribute('sizes', sizes);
+      }
+    }
+
+    function updateImageElementInModal(modal, newImageElement) {
+      const currentModalImg = modal.querySelector('picture > img');
+      doUpdateImageElementInModal(currentModalImg, newImageElement);
+      clearModalPictureSources(modal);
+    }
+
+    function updatePictureElementInModal(modal, newPictureElement) {
+      const currentModalPicture = modal.querySelector('picture');
+      const currentModalImg = currentModalPicture.querySelector('img');
+      const newImageElement = newPictureElement.querySelector('img');
+      doUpdateImageElementInModal(currentModalImg, newImageElement);
+      const newPictureElementCopy = newPictureElement.cloneNode(deep = true);
+      const oldSources = currentModalPicture.querySelectorAll('source');
+      const newSources = newPictureElementCopy.querySelectorAll('source');
+      newSources.forEach(newSource => {
+        currentModalPicture.insertBefore(newSource, currentModalPicture.firstChild);
+      });
+      clearOldPictureSources(modal, oldSources);
+    }
+
+    function getModalActiveImage(modal, options) {
+      const lightboxImgElement = modal.querySelector(`.${options.mauPrefixClass}#${options.lightboxImgId}`);
+      const lightboxImgSrc = lightboxImgElement.getAttribute('src');
+
+      const galleryItems = document.querySelectorAll(`img.${options.mauPrefixClass}.${options.galleryItemClass}`);
+      for (const item of galleryItems) {
+        if (item.getAttribute('src') === lightboxImgSrc) {
+          return item;
+        }
+      }
+      return null;
+    }
+
+    function updateModalPicture(modal, newElement) {
+      if (newElement.parentNode.tagName === 'PICTURE') {
+        updatePictureElementInModal(modal, newElement.parentNode);
+      } else {
+        updateImageElementInModal(modal, newElement);
+      }
+    }
+
+    function buildImagesCollection(options) {
       const filtersActiveTagId = options.filtersActiveTagId;
-      const lightboxImgId = options.lightboxImgId;
       const galleryItemClass = options.galleryItemClass;
       const mauPrefixClass = options.mauPrefixClass;
       const galleryItems = document.querySelectorAll(`img.${mauPrefixClass}.${galleryItemClass}`);
-      const lightboxImgSrc = document.querySelector(`.${mauPrefixClass}#${lightboxImgId}`).getAttribute('src');
       const activeTag = document.querySelector(`.${mauPrefixClass}#${filtersActiveTagId}`).dataset.imagesToggle;
-      let activeImage = null;
       let imagesCollection = [];
-
-      for (const item of galleryItems) {
-        if (item.getAttribute('src') === lightboxImgSrc) {
-          activeImage = item;
-          break;
-        }
-      }
 
       if (activeTag === 'all') {
         imagesCollection = galleryItems;
@@ -154,6 +215,13 @@ function mauGallery(opt = {}) {
           }
         });
       }
+      return imagesCollection;
+    }
+
+    function prevImage(modal, options) {
+      const imagesCollection = buildImagesCollection(options);
+      const activeImage = getModalActiveImage(modal, options);
+
       let index = 0;
       for (const image of imagesCollection) {
         if (activeImage.getAttribute('src') === image.getAttribute('src')) {
@@ -166,37 +234,12 @@ function mauGallery(opt = {}) {
       const prev =
         imagesCollection[index] ??
         imagesCollection[imagesCollection.length - 1];
-
-      document.querySelector(`.${mauPrefixClass}#${lightboxImgId}`).setAttribute('src', prev.getAttribute('src'));
+      updateModalPicture(modal, prev, options);
     }
 
-    function nextImage(options) {
-      const filtersActiveTagId = options.filtersActiveTagId;
-      const lightboxImgId = options.lightboxImgId;
-      const galleryItemClass = options.galleryItemClass;
-      const mauPrefixClass = options.mauPrefixClass;
-      const galleryItems = document.querySelectorAll(`img.${mauPrefixClass}.${galleryItemClass}`);
-      const lightboxImgSrc = document.querySelector(`.${mauPrefixClass}#${lightboxImgId}`).getAttribute('src');
-      const activeTag = document.querySelector(`.${mauPrefixClass}#${filtersActiveTagId}`).dataset.imagesToggle;
-      let activeImage = null;
-      let imagesCollection = [];
-
-      for (const item of galleryItems) {
-        if (item.getAttribute('src') === lightboxImgSrc) {
-          activeImage = item;
-          break;
-        }
-      }
-
-      if (activeTag === 'all') {
-        imagesCollection = galleryItems;
-      } else {
-        galleryItems.forEach(item => {
-          if (item.dataset.galleryTag === activeTag) {
-            imagesCollection.push(item);
-          }
-        });
-      }
+    function nextImage(modal, options) {
+      const imagesCollection = buildImagesCollection(options);
+      const activeImage = getModalActiveImage(modal, options);
 
       let index = 0;
       for (const image of imagesCollection) {
@@ -207,7 +250,18 @@ function mauGallery(opt = {}) {
       }
 
       const next = imagesCollection[index] ?? imagesCollection[0];
-      document.querySelector(`.${mauPrefixClass}#${lightboxImgId}`).setAttribute('src', next.getAttribute('src'));
+      updateModalPicture(modal, next, options);
+    }
+
+    function getRichGalleryItems(options) {
+      const columns = document.querySelectorAll(`#${options.galleryRootNodeId} div.${options.mauPrefixClass}.item-column`);
+      const dataEntries = [];
+      columns.forEach(column => {
+        const item = column.querySelector(`.${options.mauPrefixClass}.${options.galleryItemClass}`);
+        const entry = {item, column};
+        dataEntries.push(entry);
+      });
+      return dataEntries;
     }
 
     function filterByTag(element, options) {
@@ -235,7 +289,7 @@ function mauGallery(opt = {}) {
 
       saveCurrentCameraPosition();
       forceReplayAnim(options);
-      const galleryItems = document.querySelectorAll(`#${options.galleryRootNodeId} .${options.mauPrefixClass}.${options.galleryItemClass}`);
+      const richGalleryItems = getRichGalleryItems(options);
       const activeTag = document.querySelector(`.${options.mauPrefixClass}#${options.filtersActiveTagId}`);
       const tag = element.dataset.imagesToggle;
 
@@ -244,11 +298,11 @@ function mauGallery(opt = {}) {
       element.classList.add(options.mauPrefixClass, 'active');
       element.id = options.filtersActiveTagId;
 
-      galleryItems.forEach(item => {
-        if (tag === 'all' || item.dataset.galleryTag === tag) {
-          item.parentNode.parentNode.style.display = 'block';
+      richGalleryItems.forEach(richItem => {
+        if (tag === 'all' || richItem.item.dataset.galleryTag === tag) {
+          richItem.column.style.display = 'block';
         } else {
-          item.parentNode.parentNode.style.display = 'none';
+          richItem.column.style.display = 'none';
         }
         snapCameraToSavedPosition(delay = 3);
       });
@@ -271,47 +325,68 @@ function mauGallery(opt = {}) {
     }
 
     function generateRowWrapper(target, item, options, tagsSet) {
+      let tag = null;
+      if (item.tagName === 'IMG') {
+        tag = item.dataset.galleryTag;
+      } else if (item.tagName === 'PICTURE') {
+        const itemImg = item.querySelector('img');
+        tag = itemImg.dataset.galleryTag;
+      }
+      if (options.showTags && tag) {
+        tagsSet.add(tag);
+      }
+
       if (item.tagName === 'IMG') {
         item.classList.add('img-fluid');
+      }
+
+      if (item.tagName === 'PICTURE') {
+        const itemImg = item.querySelector('img');
+        if (!itemImg) {
+          return;
+        }
+        itemImg.classList.add('img-fluid');
       }
 
       const parent = target.querySelector(`.${options.mauPrefixClass}#${options.galleryItemsRowId}`);
       parent.append(item);
 
       wrapItemInColumn(item, options);
-      const tag = item.dataset.galleryTag;
-      if (options.showTags && tag !== undefined) {
-        tagsSet.add(tag);
-      }
     }
 
     function generateListeners(gallery, modal, options) {
       function handleKeyDown(event) {
         if (event.keyCode == 37 || event.key === 'ArrowLeft') {
-          prevImage(options);
+          prevImage(modal, options);
         }
         if (event.keyCode == 39 || event.key === 'ArrowRight') {
-          nextImage(options);
+          nextImage(modal, options);
         }
       }
 
-      elements = gallery.querySelectorAll(`.${options.mauPrefixClass}.${options.galleryItemClass}`);
-      elements.forEach(element => element.parentNode.addEventListener('click', () => {
-        if (options.lightBox && element.tagName === 'IMG') {
-          lightBoxOnOpen(modal, element, options);
-        }
-      }));
+      elements = gallery.querySelectorAll(`.${options.mauPrefixClass}.${options.modalTriggerClass}`);
+      elements.forEach(element => {
+        element.addEventListener('click', (event) => {
+          saveCurrentCameraPosition();
+          let imgElement = event.target.querySelector('img') ?? event.target;
+          if (options.lightBox && imgElement) {
+            if (imgElement.parentNode.tagName === 'PICTURE') {
+              imgElement = imgElement.parentNode;
+            }
+            lightBoxOnOpen(modal, imgElement, options);
+          }
+        });
+      });
 
       const galleryElementNavLinks = gallery.querySelectorAll(`.${options.mauPrefixClass}.nav-link`);
       const galleryElementMgPrev = gallery.querySelector(`#${options.galleryRootNodeId} .${options.mauPrefixClass}.mg-prev`);
       const galleryElementMgNext = gallery.querySelector(`#${options.galleryRootNodeId} .${options.mauPrefixClass}.mg-next`);
 
       galleryElementNavLinks.forEach(navlink => navlink.addEventListener('click', (event) => filterByTag(event.target, options)));
-      galleryElementMgPrev.addEventListener('click', () => prevImage(options));
-      galleryElementMgNext.addEventListener('click', () => nextImage(options));
+      galleryElementMgPrev.addEventListener('click', () => prevImage(modal, options));
+      galleryElementMgNext.addEventListener('click', () => nextImage(modal, options));
 
       modal.addEventListener('shown.bs.modal', () => {
-        saveCurrentCameraPosition();
         document.addEventListener('keydown', handleKeyDown);
       });
 
@@ -322,13 +397,23 @@ function mauGallery(opt = {}) {
         }
         snapCameraToSavedPosition();
         document.removeEventListener('keydown', handleKeyDown);
+        clearModalPictureSources(modal);
       });
     }
 
     function lightBoxOnOpen(modal, element, options) {
-      const e = document.querySelector(`.${options.mauPrefixClass}#${options.lightboxId}`);
-      const img = e.querySelector(`.${options.mauPrefixClass}#${options.lightboxImgId}`);
-      img.setAttribute('src', element.getAttribute('src'));
+      function handleImg(modal, element) {
+        updateImageElementInModal(modal, element);
+      }
+      function handlePicture(modal, element, options) {
+        updatePictureElementInModal(modal, element);
+      }
+      const modalImg = modal.querySelector(`.${options.mauPrefixClass}#${options.lightboxImgId}`);
+      if (element.tagName === 'IMG') {
+        handleImg(modal, element);
+      } else if (element.tagName === 'PICTURE') {
+        handlePicture(modal, element, options);
+      }
       if (options.navigation) {
         const buttons = modal.querySelectorAll('button');
         buttons.forEach(button => button.setAttribute('tabindex', 0));
@@ -348,9 +433,11 @@ function mauGallery(opt = {}) {
           <div class="${mauPrefixClass} modal-dialog" role="document">
             <div class="${mauPrefixClass} modal-content">
               <div class="${mauPrefixClass} modal-body">
-                <img id="${lightboxImgId}" style="user-select:none;-webkit-user-select:none;" class="${mauPrefixClass} img-fluid" alt="" />
-                ${navigation ? `<button aria-label="${prevImgBtnLabel}" class="${mauPrefixClass} mg-prev" style="touch-action:manipulation;border:none;cursor:pointer;position:absolute;top:50%;left:-15px;background:white;"><span><</span></button>` : '<span style="display:none;" />'}
-                ${navigation ? `<button aria-label="${nextImgBtnLabel}" class="${mauPrefixClass} mg-next" style="touch-action:manipulation;border:none;cursor:pointer;position:absolute;top:50%;right:-15px;background:white;}"><span>></span></button>` : '<span style="display:none;" />'}
+                <picture>
+                  <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" id="${lightboxImgId}" class="${mauPrefixClass} img-fluid" alt="" />
+                </picture>
+                ${navigation ? `<button aria-label="${prevImgBtnLabel}" class="${mauPrefixClass} mg-prev" style="touch-action:manipulation;border:none;cursor:pointer;position:absolute;top:50%;left:-15px;background:#fff;"><span><</span></button>` : '<span style="display:none;" />'}
+                ${navigation ? `<button aria-label="${nextImgBtnLabel}" class="${mauPrefixClass} mg-next" style="touch-action:manipulation;border:none;cursor:pointer;position:absolute;top:50%;right:-15px;background:#fff;}"><span>></span></button>` : '<span style="display:none;" />'}
               </div>
             </div>
           </div>
@@ -373,9 +460,12 @@ function mauGallery(opt = {}) {
         createLightBox(target, options);
       }
 
-      target.querySelectorAll(`.${options.mauPrefixClass}.${options.galleryItemClass}`).forEach(
-        item => generateRowWrapper(target, item, options, tagsSet)
-      );
+      target.querySelectorAll(`.${options.mauPrefixClass}.${options.galleryItemClass}`).forEach(item => {
+        if (item.parentNode.tagName === 'PICTURE') {
+          item = item.parentNode;
+        }
+        generateRowWrapper(target, item, options, tagsSet)
+      });
 
       if (options.showTags) {
         showItemTags(target, options, tagsSet);
