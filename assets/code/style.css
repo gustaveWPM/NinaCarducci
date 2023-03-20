@@ -237,6 +237,8 @@ ul {
 
 .mau.item-column::after {
   content: "";
+  position: relative;
+  z-index: -1000;
   display: block;
   padding-bottom: 100%
 }

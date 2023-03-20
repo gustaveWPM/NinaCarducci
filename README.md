@@ -18,7 +18,7 @@ Project made during an _OpenClassrooms_ bootcamp.
 [Click here to read the project report (FR 🇫🇷)](https://drive.google.com/drive/folders/1H6xHVrBw5YJsnqYypYSN2wPCBuY7zvh5)
 
 ### Associated projects
-[mauGallery Without JQuery](https://github.com/gustaveWPM/mauGallery-without-jquery)
+[Enhanced MauGallery](https://github.com/gustaveWPM/enhanced-mauGallery)
 
 ---
 

@@ -10,8 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
         'xl': 3
       },
       'lightBox': true,
-      'lightboxId': 'myAwesomeLightbox',
+      'navigation': true,
       'showTags': true,
+      'lightboxId': 'myAwesomeLightbox',
       'tagsPosition': 'top',
       'prevImgButtonLabel': 'Image précédente',
       'nextImgButtonLabel': 'Image suivante',
