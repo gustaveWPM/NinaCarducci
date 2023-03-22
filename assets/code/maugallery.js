@@ -227,13 +227,13 @@ function mauGallery(opt = {}) {
       clearSaveCurrentCameraPositionSideEffects();
     }
 
-    function wrapItemInColumn(element) {
-      function doWrap(element, wrapperOpen, wrapperClose) {
-        orgHtml = element.outerHTML;
-        newHtml = wrapperOpen + orgHtml + wrapperClose;
-        element.outerHTML = newHtml;
-      }
+    function wrap(element, wrapperOpen, wrapperClose) {
+      orgHtml = element.outerHTML;
+      newHtml = wrapperOpen + orgHtml + wrapperClose;
+      element.outerHTML = newHtml;
+    }
 
+    function wrapItemInColumn(element) {
       const lightBox = options('lightBox');
       const columns = options('columns');
       const mauPrefixClass = options('mauPrefixClass');
@@ -251,7 +251,7 @@ function mauGallery(opt = {}) {
           wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4 col-${Math.ceil(12 / columns)}'><div tabindex="0" style="width:100%;height:100%;">`;
           wrapperClose = '</div></div>';
         }
-        doWrap(element, wrapperOpen, wrapperClose);
+        wrap(element, wrapperOpen, wrapperClose);
       } else if (typeof columns === 'object') {
         const columnsObjSchema = { 'xs': '', 'sm': '', 'md': '', 'lg': '', 'xl': '' }
         Object.keys(columns).forEach(key => {
@@ -282,7 +282,7 @@ function mauGallery(opt = {}) {
           wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4${columnClasses}'><div tabindex="0" style="width:100%;height:100%;">`;
           wrapperClose = '</div></div>';
         }
-        doWrap(element, wrapperOpen, wrapperClose);
+        wrap(element, wrapperOpen, wrapperClose);
       } else {
         throw new Error(`Columns should be defined as numbers or objects. ${typeof columns} is not supported.`);
       }
@@ -788,7 +788,6 @@ function mauGallery(opt = {}) {
           initializeModalImg(currentElement, htmlAttributesWhitelist);
         }
         if (currentElement) {
-          initializeModalImg(currentElement, htmlAttributesWhitelist);
           currentElement.style.display = 'none';
           allOuterHTML += currentElement.outerHTML;
         }
