@@ -52,6 +52,7 @@ function mauGallery(opt = {}) {
       'touchendY': null,
       'curX': 0,
       'curY': 0,
+      'screenOrientation': null,
       'curYDelta': 0,
       'lockScreenHasGlitched': false,
       'activeElement': null,
@@ -78,6 +79,7 @@ function mauGallery(opt = {}) {
     if (key === undefined) {
       return props.options;
     }
+
     if (!(key in props.options)) {
       throw new Error(`No option value found with this key: ${key}`);
     }
@@ -90,6 +92,7 @@ function mauGallery(opt = {}) {
     if (key === undefined) {
       return props.memos;
     }
+
     if (!(key in props.memos)) {
       throw new Error(`No memo value found with this key: ${key}`);
     }
@@ -98,6 +101,7 @@ function mauGallery(opt = {}) {
       props.memos[key] = newValue;
       return;
     }
+
     const value = props.memos[key];
     return value;
   }
@@ -145,14 +149,15 @@ function mauGallery(opt = {}) {
       const computedUpPx = getElementUpperPx(element);
       const computedLeftPx = rect.right - width;
       let expected = null;
+
       if (checkFullyInViewport) {
         expected = (computedUpPx >= 0 && computedLeftPx >= 0) &&
-        (computedUpPx <= window.innerHeight && computedLeftPx <= window.innerWidth) &&
-        (rect.bottom <= window.innerHeight && rect.right <= window.innerWidth)
+          (computedUpPx <= window.innerHeight && computedLeftPx <= window.innerWidth) &&
+          (rect.bottom <= window.innerHeight && rect.right <= window.innerWidth)
       } else {
         expected = (computedUpPx >= 0 && computedLeftPx >= 0) &&
-        (computedUpPx <= window.innerHeight && computedLeftPx <= window.innerWidth) ||
-        (rect.bottom <= window.innerHeight && rect.right <= window.innerWidth)
+          (computedUpPx <= window.innerHeight && computedLeftPx <= window.innerWidth) ||
+          (rect.bottom <= window.innerHeight && rect.right <= window.innerWidth)
       }
       return expected;
     }
@@ -178,6 +183,7 @@ function mauGallery(opt = {}) {
       if (x < 0) {
         return;
       }
+
       for (let i = 0; i < 25; i++) {
         doSnapCamera(x, y, delay + i);
       }
@@ -185,6 +191,7 @@ function mauGallery(opt = {}) {
 
     function saveActiveElement() {
       const activeElement = document.activeElement;
+
       if (activeElement) {
         memos('activeElement', activeElement);
         memos('activeElementAbsoluteY', getAbsoluteElementY(activeElement));
@@ -201,10 +208,19 @@ function mauGallery(opt = {}) {
     }
 
     function moveCameraToSavedPosition(activeElement = null) {
-      if (isOnMobile() || !activeElement) {
+      if (isOnMobile() || !activeElement) {
+        const screenOrientation = getScreenOrientation();
+
+        if (screenOrientation && screenOrientation != memos('screenOrientation')) {
+          // ToDo: fix intelligent scroll here
+          // const absoluteY = getAbsoluteElementY(activeElement);
+          // alert(`test: ${absoluteY} || ${activeElement}`);
+          // snapCamera(null, absoluteY);
+        }
         snapCamera(memos('curX'), memos('curY'));
       } else if (activeElement) {
         let preventScroll = true;
+
         if (!isInViewport(activeElement, checkFullyInViewport = true)) {
           const computedUpPx = getElementUpperPx(activeElement);
           if (computedUpPx < 0) {
@@ -215,7 +231,8 @@ function mauGallery(opt = {}) {
             }
           }
         }
-        activeElement.focus({preventScroll});
+        activeElement.focus({ preventScroll });
+
         if (preventScroll) {
           if (memos('lockScreenHasGlitched') && window.scrollY + memos('curYDelta') === memos('curY')) {
             snapCamera(memos('curX'), memos('curY'));
@@ -225,9 +242,21 @@ function mauGallery(opt = {}) {
       clearSaveCurrentCameraPositionSideEffects();
     }
 
+    function getScreenOrientation() {
+      if (!isOnMobile()) {
+        return null;
+      }
+
+      if (window.innerWidth < window.innerHeight) {
+        return 'p';
+      }
+      return 'l';
+    }
+
     function wrap(element, wrapperOpen, wrapperClose) {
       orgHtml = element.outerHTML;
       newHtml = wrapperOpen + orgHtml + wrapperClose;
+
       if (!element.parentNode) {
         const parser = new DOMParser();
         const wrapperNode = parser.parseFromString(newHtml, "text/html");
@@ -246,6 +275,7 @@ function mauGallery(opt = {}) {
       const injectModalTrigger = lightBox ? `data-bs-toggle="modal" class="${mauPrefixClass} ${modalTriggerClass}"` : '';
       let wrapperOpen = '';
       let wrapperClose = '';
+
       if (typeof columns === 'number') {
         if (isImg && lightBox) {
           wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4 col-${Math.ceil(12 / columns)}'><a href="#" ${injectModalTrigger} style="text-decoration:none;color:inherit;display:flex;width:100%;height:100%">`;
@@ -262,22 +292,28 @@ function mauGallery(opt = {}) {
             throw new Error(`Unknown columns key: ${key}.`);
           }
         });
+
         let columnClasses = '';
         if (columns.xs) {
           columnClasses += ` col-${Math.ceil(12 / columns.xs)}`;
         }
+
         if (columns.sm) {
           columnClasses += ` col-sm-${Math.ceil(12 / columns.sm)}`;
         }
+
         if (columns.md) {
           columnClasses += ` col-md-${Math.ceil(12 / columns.md)}`;
         }
+
         if (columns.lg) {
           columnClasses += ` col-lg-${Math.ceil(12 / columns.lg)}`;
         }
+
         if (columns.xl) {
           columnClasses += ` col-xl-${Math.ceil(12 / columns.xl)}`;
         }
+
         if (isImg && lightBox) {
           wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4${columnClasses}'><a href="#" ${injectModalTrigger} style="text-decoration:none;color:inherit;display:flex;width:100%;height:100%">`;
           wrapperClose = '</a></div>';
@@ -296,6 +332,7 @@ function mauGallery(opt = {}) {
         const toRemove = [];
         for (let i = 0, attrs = element.attributes; attrs[i]; i++) {
           let attrKey = attrs[i].nodeName;
+
           if (htmlAttributesWhitelist.indexOf(attrKey) === -1) {
             toRemove.push(attrKey);
           }
@@ -309,12 +346,15 @@ function mauGallery(opt = {}) {
       const sizes = element.getAttribute('sizes') ?? null;
       element.className = `${options('mauPrefixClass')} img-fluid`;
       element.setAttribute('alt', alt);
+
       if (srcset) {
         element.setAttribute('srcset', srcset);
       }
+
       if (sizes) {
         element.setAttribute('sizes', sizes);
       }
+
       element.style.maxWidth = '85vw';
       element.style.maxHeight = '85vh';
     }
@@ -329,6 +369,7 @@ function mauGallery(opt = {}) {
       if (lazy && memos('richGalleryItems')) {
         return memos('richGalleryItems');
       }
+
       const mauPrefixClass = options('mauPrefixClass');
       const galleryItemClass = options('galleryItemClass');
       const columns = document.querySelectorAll(`div.${mauPrefixClass}.item-column`);
@@ -336,9 +377,11 @@ function mauGallery(opt = {}) {
       let picture = null;
       columns.forEach(column => {
         const item = column.querySelector(`.${mauPrefixClass}.${galleryItemClass}`);
+
         if (item.parentNode.tagName === 'PICTURE') {
           picture = item.parentNode;
         }
+
         const entry = { item, column, picture };
         dataEntries.push(entry);
       });
@@ -351,6 +394,7 @@ function mauGallery(opt = {}) {
         const galleryItemsRowId = options('galleryItemsRowId');
         const mauPrefixClass = options('mauPrefixClass');
         const rootNode = document.querySelector(`.${mauPrefixClass}#${galleryItemsRowId}`);
+
         if (!isOnMobile()) {
           const oldAnimation = rootNode.style.animation;
           const oldDisplay = rootNode.style.display;
@@ -360,6 +404,7 @@ function mauGallery(opt = {}) {
           rootNode.style.display = oldDisplay;
           rootNode.style.animation = oldAnimation;
         }
+
         const oldAnimationName = rootNode.style.animationName;
         rootNode.style.animationName = 'none';
         window.requestAnimationFrame(() => rootNode.style.animationName = oldAnimationName);
@@ -393,6 +438,7 @@ function mauGallery(opt = {}) {
         } else {
           richItem.column.style.display = 'none';
         }
+
         if (options("tagsPosition") === 'top') {
           moveCameraToSavedPosition();
         }
@@ -403,6 +449,7 @@ function mauGallery(opt = {}) {
       const modalCarouselColumns = modalCarousel.querySelectorAll(`.${mauPrefixClass}.modal-${galleryItemClass}`);
       modalCarouselColumns.forEach(column => {
         const item = column.querySelector('img');
+
         if (tag === 'all' || item.dataset.galleryTag === tag) {
           column.classList.add('carousel-item');
           column.style.display = null;
@@ -415,6 +462,7 @@ function mauGallery(opt = {}) {
       if (options("tagsPosition") === 'bottom') {
         const activeElementTop = document.activeElement.getBoundingClientRect().top;
         const activeElementTopsDistance = Math.abs(activeElementOldTop - activeElementTop);
+
         if (activeElementTopsDistance >= 100) {
           const oldPaddingBottom = document.activeElement.style.paddingBottom;
           document.activeElement.style.paddingBottom = '25px';
@@ -433,6 +481,7 @@ function mauGallery(opt = {}) {
       let tagItems = `<li class="nav-item"><button style="touch-action:manipulation;" class="${mauPrefixClass} nav-link active" data-images-toggle="all" id="${activeTagId}">${disableFiltersButtonLabel}</button></li>`;
       tagsSet().forEach(value => tagItems += `<li class="nav-item"><button style="touch-action:manipulation;" class="${mauPrefixClass} nav-link" data-images-toggle="${value}">${value}</button></li>`);
       const tagsRow = `<ul class="my-4 tags-bar nav nav-pills">${tagItems}</ul>`;
+
       if (tagsPosition === 'bottom') {
         gallery.innerHTML = gallery.innerHTML + tagsRow;
       } else if (tagsPosition === 'top') {
@@ -445,6 +494,7 @@ function mauGallery(opt = {}) {
     function generateRowWrapper(target, item) {
       let tag = null;
       let itemImg = null;
+
       if (item.tagName === 'IMG') {
         tag = item.dataset.galleryTag;
         item.classList.add('img-fluid');
@@ -453,9 +503,11 @@ function mauGallery(opt = {}) {
         tag = itemImg.dataset.galleryTag;
         itemImg.classList.add('img-fluid');
       }
+
       if (options('showTags') && tag) {
         tagsSet().add(tag);
       }
+
       const mauPrefixClass = options('mauPrefixClass');
       const galleryItemsRowId = options('galleryItemsRowId');
       const parent = target.querySelector(`.${mauPrefixClass}#${galleryItemsRowId}`);
@@ -487,7 +539,10 @@ function mauGallery(opt = {}) {
         if (!isOnMobile()) {
           const lightboxId = options('lightboxId');
           const mgNextElement = event.target.querySelector(`#${lightboxId} .mg-next`);
-          mgNextElement.parentNode.focus();
+
+          if (!isOnMobile()) {
+            mgNextElement.parentNode.focus();
+          }
         }
       });
 
@@ -502,27 +557,31 @@ function mauGallery(opt = {}) {
         // * ... Work-around (5): set the modal display to none to be consistent with the work-around n°4.
         getModalElement().style.display = 'none';
       });
-  
+
       const modalTriggerClass = options('modalTriggerClass');
       elements = gallery.querySelectorAll(`.${mauPrefixClass}.${modalTriggerClass}`);
       document.addEventListener('keydown', event => {
+
         if (event.keyCode == 9 || event.key === 'Tab') {
           memos('tab', true);
+
           if (memos('tabTimeout')) {
             clearTimeout(memos('tabTimeout'));
             memos('tabTimeout', null);
           }
+
           memos('tabTimeout', setTimeout(() => {
             memos('tab', false);
             memos('tabTimeout', null);
           }, 850));
         }
-      })
+      });
 
       elements.forEach(element => {
         element.addEventListener('click', event => {
           event.preventDefault();
           let imgElement = event.target.querySelector('img') ?? event.target;
+
           if (options('lightBox') && imgElement) {
             if (imgElement.parentNode.tagName === 'PICTURE') {
               imgElement = imgElement.parentNode;
@@ -540,6 +599,7 @@ function mauGallery(opt = {}) {
       modalCarousel.addEventListener('slide.bs.carousel', (event) => {
         const m = document.querySelector(`#${options('lightboxId')}`);
         const modalSingletonInstance = bootstrap.Modal.getInstance(m);
+
         if (modalSingletonInstance && modalSingletonInstance._isTransitioning) {
           event.preventDefault();
         }
@@ -547,11 +607,13 @@ function mauGallery(opt = {}) {
 
       function handleKeyDown(event) {
         if (options('navigation')) {
+
           if (event.keyCode == 37 || event.key === 'ArrowLeft') {
             const lightboxId = options('lightboxId');
             const mgPrevElement = modal.querySelector(`#${lightboxId} .mg-prev`);
             mgPrevElement.parentNode.focus();
           }
+
           if (event.keyCode == 39 || event.key === 'ArrowRight') {
             const lightboxId = options('lightboxId');
             const mgNextElement = modal.querySelector(`#${lightboxId} .mg-next`);
@@ -563,11 +625,13 @@ function mauGallery(opt = {}) {
 
     function setActiveModalCarouselElement(element, activationState = true) {
       let carouselElement = null;
+
       if (element.parentNode.tagName === 'PICTURE') {
         carouselElement = element.parentNode.parentNode;
       } else {
         carouselElement = element.parentNode;
       }
+
       if (activationState) {
         const galleryItemClass = options('galleryItemClass');
         const modalCarouselElements = getModalElement().querySelectorAll(`.${options('mauPrefixClass')}.modal-${galleryItemClass}`);
@@ -580,9 +644,11 @@ function mauGallery(opt = {}) {
 
     function lightBoxOnOpen(modal, element) {
       let providedImg = element;
+
       if (element.tagName === 'PICTURE') {
         providedImg = element.querySelector('img');
       }
+
       const modalImgs = modal.querySelectorAll('img');
       for (const modalImg of modalImgs) {
         if (modalImg.getAttribute('src') === providedImg.getAttribute('src')) {
@@ -594,22 +660,29 @@ function mauGallery(opt = {}) {
       if (options('navigation')) {
         const lightboxId = options('lightboxId');
         // * ... Work-around (2): force the keyboard navigation to be immediately available as soon the focus is placed on a carousel button.
+        const carouselSingletonInstance = bootstrap.Carousel.getInstance(`#${lightboxId}-carousel`) ?? new bootstrap.Carousel(`#${lightboxId}-carousel`);
         if (!isOnMobile()) {
-          const carouselSingletonInstance = bootstrap.Carousel.getInstance(`#${lightboxId}-carousel`) ?? new bootstrap.Carousel(`#${lightboxId}-carousel`);
           carouselSingletonInstance._slide(carouselSingletonInstance._directionToOrder('right'));
           carouselSingletonInstance._slide(carouselSingletonInstance._directionToOrder('left'));
+        } else {
+          const virtualClick = new Event('click');
+          const mgNextElement = modal.querySelector(`#${lightboxId} .mg-next`);
+          mgNextElement.dispatchEvent(virtualClick);
+          carouselSingletonInstance._slide(carouselSingletonInstance._directionToOrder('right'));
         }
       }
 
+      memos('screenOrientation', getScreenOrientation());
+
       // * ... Work-around (3): Load the modal via custom Javascript to save the good old camera position value, BEFORE drawing the modal, since at least one Bootstrap's locking screen function is glitched.
-      const lightboxId = options('lightboxId');
       if (!memos('tab')) {
         saveCurrentCameraPosition();
       } else {
         saveActiveElement();
         memos('curX', -1);
       }
-      
+
+      const lightboxId = options('lightboxId');
       const m = document.querySelector(`#${lightboxId}`);
       const modalSingletonInstance = bootstrap.Modal.getInstance(m) ?? new bootstrap.Modal(m);
       modalSingletonInstance.show();
@@ -637,6 +710,7 @@ function mauGallery(opt = {}) {
       let carouselInner = '';
       getRichGalleryItems().forEach(galleryItem => {
         let currentElement = null;
+
         if (galleryItem.picture) {
           currentElement = galleryItem.picture.cloneNode(deep = true);
           initializeModalImg(currentElement.querySelector('img'), htmlAttributesWhitelist);
@@ -644,12 +718,14 @@ function mauGallery(opt = {}) {
           currentElement = galleryItem.item.cloneNode(deep = true);
           initializeModalImg(currentElement, htmlAttributesWhitelist);
         }
+
         if (currentElement) {
           const galleryItemClass = options('galleryItemClass');
           const wrappedCurrentElement = wrap(currentElement, `<div class="carousel-item mau modal-${galleryItemClass}" style="transition: all 0s !important">`, '</div>');
           carouselInner += wrappedCurrentElement.outerHTML;
         }
       });
+
       const lightbox = `
         <div class="${mauPrefixClass} modal fade" id="${lightboxId}" tabindex="-1" role="dialog" aria-hidden="true" style="user-select:none;-webkit-user-select:none;">
           <div class="modal-dialog" role="document" style="margin:auto;max-width:unset;">
@@ -660,7 +736,7 @@ function mauGallery(opt = {}) {
                     ${carouselInner}
                   </div>
                   ${navigation
-                    ? `<button class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation">
+          ? `<button class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation">
                          <span class="carousel-control-prev-icon mau mg-prev" aria-hidden="true"></span>
                          <span class="visually-hidden">${prevImgBtnLabel}</span>
                        </button>
@@ -668,8 +744,8 @@ function mauGallery(opt = {}) {
                          <span class="carousel-control-next-icon mau mg-next" aria-hidden="true"></span>
                          <span class="visually-hidden">${nextImgBtnLabel}</span>
                        </button>`
-                    : ''
-                  }
+          : ''
+        }
                 </div>
               </div>
             </div>
@@ -752,7 +828,7 @@ function mauGallery(opt = {}) {
           #${lightboxId} .carousel-control-prev, #${lightboxId} .carousel-control-next {
             width: 0;
           }`,
-          'hotfix_a': `
+        'hotfix_a': `
           .${mauPrefixClass}.item-column {
             position: relative;
             margin-bottom: 0 !important;
@@ -787,6 +863,7 @@ function mauGallery(opt = {}) {
             }
           }`
       };
+
       if (isOnMobile()) {
         const galleryRootNodeId = options('galleryRootNodeId');
         const mobileRules = {
@@ -817,6 +894,7 @@ function mauGallery(opt = {}) {
         }
         generateRowWrapper(target, item);
       });
+
       if (lightBox) {
         createLightBox(target);
       }
@@ -824,6 +902,7 @@ function mauGallery(opt = {}) {
       if (options('showTags')) {
         showItemTags(target);
       }
+
       const modal = getModalElement();
       generateListeners(target, modal);
     }
