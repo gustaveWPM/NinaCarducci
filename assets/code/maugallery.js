@@ -346,6 +346,7 @@ function mauGallery(opt = {}) {
       const sizes = element.getAttribute('sizes') ?? null;
       element.className = `${options('mauPrefixClass')} img-fluid`;
       element.setAttribute('alt', alt);
+      element.setAttribute('loading', 'lazy');
 
       if (srcset) {
         element.setAttribute('srcset', srcset);
@@ -451,9 +452,11 @@ function mauGallery(opt = {}) {
         const item = column.querySelector('img');
 
         if (tag === 'all' || item.dataset.galleryTag === tag) {
+          item.removeAttribute('loading');
           column.classList.add('carousel-item');
           column.style.display = null;
         } else {
+          item.setAttribute('loading', 'lazy');
           column.classList.remove('carousel-item');
           column.style.display = 'none';
         }
