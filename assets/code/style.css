@@ -23,7 +23,7 @@ blockquote {
 }
 
 .modal {
-  transition: all .5s;
+  transition: opacity .5s;
 }
 
 * {
@@ -48,9 +48,9 @@ ul {
   --about-before-color: #e5975f
 }
 
-.carousel-control-next-icon,
-.carousel-control-prev-icon,
-.carousel-indicators-container {
+#carouselNinaCarducci .carousel-control-next-icon,
+#carouselNinaCarducci .carousel-control-prev-icon,
+#carouselNinaCarducci .carousel-indicators-container {
   --_bg-color: rgba(0, 0, 0, .12);
   padding: 15px;
   border-radius: 25px;
@@ -59,19 +59,19 @@ ul {
   border: .4rem solid transparent
 }
 
-.carousel-indicators-container {
+#carouselNinaCarducci .carousel-indicators-container {
   padding: 0 5px 0 5px;
   border-radius: 15px;
   border: none
 }
 
-.carousel-control-prev .carousel-control-prev-icon,
-.carousel-control-next .carousel-control-next-icon {
+#carouselNinaCarducci .carousel-control-prev .carousel-control-prev-icon,
+#carouselNinaCarducci .carousel-control-next .carousel-control-next-icon {
   transition: all .25s ease-in;
 }
 
-.carousel-control-prev:focus-within .carousel-control-prev-icon,
-.carousel-control-next:focus-within .carousel-control-next-icon {
+#carouselNinaCarducci .carousel-control-prev:focus-within .carousel-control-prev-icon,
+#carouselNinaCarducci .carousel-control-next:focus-within .carousel-control-next-icon {
   transform: scale(1.8);
   border: solid 2px white;
   transition: all .25s ease-in;
@@ -118,7 +118,7 @@ ul {
   color: #000
 }
 
-.carousel-inner {
+#carouselNinaCarducci .carousel-inner {
   --_computed_height: calc(100vh - var(--navbar-height));
   min-height: var(--_computed_height);
   height: var(--_computed_height);
@@ -127,11 +127,11 @@ ul {
   transition: height .5s
 }
 
-.carousel-item {
+#carouselNinaCarducci .carousel-item {
   height: 100%
 }
 
-.carousel-item img {
+#carouselNinaCarducci .carousel-item img {
   height: 100%;
   object-fit: cover
 }
@@ -618,7 +618,7 @@ input[type=submit] {
     width: 100%;
   }
 
-  .carousel-inner {
+  #carouselNinaCarducci .carousel-inner {
     --_forced_height: 350px;
     min-height: var(--_forced_height);
     height: var(--_forced_height);
