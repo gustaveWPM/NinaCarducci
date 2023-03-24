@@ -1,4 +1,4 @@
-@import url("./bootstrap.css");
+@import url("./purged_bootstrap.css");
 
 :root {
   --navbar-height: 100px;
