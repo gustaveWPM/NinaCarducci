@@ -743,10 +743,10 @@ function mauGallery(opt = {}) {
                     ${carouselInner}
                   </div>
                   ${navigation
-                  ? `<button aria-label="${prevImgBtnLabel}" class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation;">
+                  ? `<button aria-label="${prevImgBtnLabel}" class="d-block carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="display:none;touch-action:manipulation;">
                          <span class="carousel-control-prev-icon mau mg-prev" aria-hidden="true"></span>
                        </button>
-                       <button aria-label="${nextImgBtnLabel}" class="carousel-control-next" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="next" style="touch-action:manipulation;">
+                       <button aria-label="${nextImgBtnLabel}" class="d-block carousel-control-next" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="next" style="display:none;touch-action:manipulation;">
                          <span class="carousel-control-next-icon mau mg-next" aria-hidden="true"></span>
                        </button>`
                   : ''

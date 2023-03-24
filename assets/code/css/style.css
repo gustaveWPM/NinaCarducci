@@ -1,5 +1,14 @@
+@import url("./bootstrap.css");
+
+:root {
+  --navbar-height: 100px;
+  --about-bg-color: #f6d2b8;
+  --about-before-color: #e5975f;
+  --nina-carousel-btns-bg-color: rgba(0, 0, 0, .12)
+}
+
 * {
-  font-family: 'Inter';
+  font-family: sans-serif;
   box-sizing: border-box;
   min-width: 0;
   margin: 0;
@@ -12,7 +21,25 @@
 #about-me .about-me__introduction,
 .quote__author,
 .quote__text {
-  font-family: 'Spectral', serif
+  font-family: serif
+}
+
+@media (min-width:481px) {
+  * {
+    font-family: Inter, sans-serif
+  }
+
+  #about-me .about-me__introduction,
+  .quote__author,
+  .quote__text {
+    font-family: Bitter, serif
+  }
+}
+
+#about-me .about-me__introduction,
+.quote__author,
+.quote__text {
+  font-family: Bitter, serif
 }
 
 h1 {
@@ -45,27 +72,18 @@ ul {
   list-style-type: none
 }
 
-:root {
-  --navbar-height: 100px;
-  --about-bg-color: #f6d2b8;
-  --about-before-color: #e5975f
-}
-
 #carouselNinaCarducci .carousel-control-next-icon,
-#carouselNinaCarducci .carousel-control-prev-icon,
-#carouselNinaCarducci .carousel-indicators-container {
-  --_bg-color: rgba(0, 0, 0, .12);
+#carouselNinaCarducci .carousel-control-prev-icon {
   padding: 15px;
   border-radius: 25px;
-  background-color: var(--_bg-color);
+  background-color: var(--nina-carousel-btns-bg-color);
   filter: drop-shadow(0 0 .5rem rgba(0, 0, 0, .2));
   border: .4rem solid transparent
 }
 
 #carouselNinaCarducci .carousel-indicators-container {
-  padding: 0 5px 0 5px;
-  border-radius: 15px;
-  border: none
+  background-color: var(--nina-carousel-btns-bg-color);
+  border-radius: 100%
 }
 
 #carouselNinaCarducci .carousel-control-next .carousel-control-next-icon,
@@ -90,7 +108,7 @@ ul {
 
 .top-header h1 {
   font-weight: 400;
-  font-size: 1.61em !important;
+  font-size: 1.61em;
   min-width: 175px
 }
 
@@ -99,8 +117,8 @@ ul {
   color: inherit
 }
 
-.top-header-navbar {
-  padding: 10px 5.2vw 10px 5.2vw !important
+.container-fluid.top-header-navbar {
+  padding: 10px 5.2vw 10px 5.2vw
 }
 
 .top-header nav {
@@ -188,8 +206,7 @@ ul {
 #about-me p {
   width: 100%;
   font-size: 1em;
-  line-height: 1.5em;
-  text-align: left
+  line-height: 1.5em
 }
 
 .about-me__title {
@@ -237,15 +254,15 @@ ul {
 
 .quote__text {
   font-style: italic;
-  text-align: justify;
-  font-weight: 300;
+  font-weight: 400;
+  line-height: 1.2em;
   font-size: 2.4em
 }
 
 .quote__author {
   font-weight: 700;
   font-size: 1.3em;
-  line-height: 1.3em
+  line-height: 2.3em
 }
 
 .quote {
@@ -332,9 +349,14 @@ ul {
   width: 100%
 }
 
-#contact-section h3 {
+#contact-section h2 {
   font-size: 1.25em;
-  margin-bottom: 15px
+  line-height: 1.35em
+}
+
+#contact-section h3 {
+  font-size: .95em;
+  line-height: 2.25em
 }
 
 #contact-section p {
@@ -639,10 +661,6 @@ input[type=submit] {
 }
 
 @media (max-width:600px) {
-  .quote__text {
-    text-align: left
-  }
-
   #services-section~.quote {
     max-width: 75%
   }
