@@ -212,10 +212,10 @@ function mauGallery(opt = {}) {
         const screenOrientation = getScreenOrientation();
 
         if (screenOrientation && screenOrientation != memos('screenOrientation')) {
-          // ToDo: fix intelligent scroll here
-          // const absoluteY = getAbsoluteElementY(activeElement);
-          // alert(`test: ${absoluteY} || ${activeElement}`);
-          // snapCamera(null, absoluteY);
+          /* ToDo: fix intelligent scroll here
+             const absoluteY = getAbsoluteElementY(activeElement);
+             alert(`test: ${absoluteY} || ${activeElement}`);
+             snapCamera(null, absoluteY); */
         }
         snapCamera(memos('curX'), memos('curY'));
       } else if (activeElement) {
@@ -272,16 +272,16 @@ function mauGallery(opt = {}) {
       const mauPrefixClass = options('mauPrefixClass');
       const modalTriggerClass = options('modalTriggerClass');
       const isImg = element.tagName === 'IMG' || element.tagName === 'PICTURE';
-      const injectModalTrigger = lightBox ? `data-bs-toggle="modal" class="${mauPrefixClass} ${modalTriggerClass}"` : '';
+      const injectModalTrigger = lightBox ? 'data-bs-toggle="modal"' : '';
       let wrapperOpen = '';
       let wrapperClose = '';
 
       if (typeof columns === 'number') {
         if (isImg && lightBox) {
-          wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4 col-${Math.ceil(12 / columns)}'><a href="#" ${injectModalTrigger} style="text-decoration:none;color:inherit;display:flex;width:100%;height:100%">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column col-${Math.trunc(12 / columns)}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''}" style="display:flex;width:100%;height:100%;text-decoration:none;color:inherit;">`;
           wrapperClose = '</a></div>';
         } else {
-          wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4 col-${Math.ceil(12 / columns)}'><div tabindex="0" style="width:100%;height:100%;">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column col-${Math.trunc(12 / columns)}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><div tabindex="0" style="width:100%;height:100%;">`;
           wrapperClose = '</div></div>';
         }
         wrap(element, wrapperOpen, wrapperClose);
@@ -315,10 +315,10 @@ function mauGallery(opt = {}) {
         }
 
         if (isImg && lightBox) {
-          wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4${columnClasses}'><a href="#" ${injectModalTrigger} style="text-decoration:none;color:inherit;display:flex;width:100%;height:100%">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''}" style="display:flex;width:100%;height:100%;text-decoration:none;color:inherit;">`;
           wrapperClose = '</a></div>';
         } else {
-          wrapperOpen = `<div class='${mauPrefixClass} item-column mb-4${columnClasses}'><div tabindex="0" style="width:100%;height:100%;">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><div tabindex="0" style="width:100%;height:100%;">`;
           wrapperClose = '</div></div>';
         }
         wrap(element, wrapperOpen, wrapperClose);
@@ -724,7 +724,7 @@ function mauGallery(opt = {}) {
 
         if (currentElement) {
           const galleryItemClass = options('galleryItemClass');
-          const wrappedCurrentElement = wrap(currentElement, `<div class="carousel-item mau modal-${galleryItemClass}" style="transition: all 0s !important">`, '</div>');
+          const wrappedCurrentElement = wrap(currentElement, `<div class="carousel-item mau modal-${galleryItemClass}" style="transition: all 0s !important;">`, '</div>');
           carouselInner += wrappedCurrentElement.outerHTML;
         }
       });
@@ -739,16 +739,14 @@ function mauGallery(opt = {}) {
                     ${carouselInner}
                   </div>
                   ${navigation
-          ? `<button class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation">
+                  ? `<button aria-label="${prevImgBtnLabel}" class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation;">
                          <span class="carousel-control-prev-icon mau mg-prev" aria-hidden="true"></span>
-                         <span class="visually-hidden">${prevImgBtnLabel}</span>
                        </button>
-                       <button class="carousel-control-next" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="next" style="touch-action:manipulation">
+                       <button aria-label="${nextImgBtnLabel}" class="carousel-control-next" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="next" style="touch-action:manipulation;">
                          <span class="carousel-control-next-icon mau mg-next" aria-hidden="true"></span>
-                         <span class="visually-hidden">${nextImgBtnLabel}</span>
                        </button>`
-          : ''
-        }
+                  : ''
+                  }
                 </div>
               </div>
             </div>
