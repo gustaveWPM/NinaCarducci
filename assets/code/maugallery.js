@@ -278,10 +278,10 @@ function mauGallery(opt = {}) {
 
       if (typeof columns === 'number') {
         if (isImg && lightBox) {
-          wrapperOpen = `<div class="${mauPrefixClass} item-column col-${Math.trunc(12 / columns)}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''}" style="display:flex;width:100%;height:100%;text-decoration:none;color:inherit;">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column d-flex position-relative mb-0 p-0 col-${Math.trunc(12 / columns)}" style="display:none;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''} d-flex w-100 h-100" style="display:none;text-decoration:none;color:inherit;">`;
           wrapperClose = '</a></div>';
         } else {
-          wrapperOpen = `<div class="${mauPrefixClass} item-column col-${Math.trunc(12 / columns)}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><div tabindex="0" style="width:100%;height:100%;">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column d-flex position-relative mb-0 p-0 col-${Math.trunc(12 / columns)}" style="display:none;"><div tabindex="0" class="w-100 h-100">`;
           wrapperClose = '</div></div>';
         }
         wrap(element, wrapperOpen, wrapperClose);
@@ -315,10 +315,14 @@ function mauGallery(opt = {}) {
         }
 
         if (isImg && lightBox) {
-          wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''}" style="display:flex;width:100%;height:100%;text-decoration:none;color:inherit;">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses} position-relative mb-0 p-0"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''} d-flex w-100 h-100" style="text-decoration:none;color:inherit;">`;
+
+//          wrapperOpen = `<div class="${mauPrefixClass} item-column d-flex position-relative mb-0 p-0 ${columnClasses}" style="display:none;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''} d-flex w-100 h-100" style="display:none;text-decoration:none;color:inherit;">`;
           wrapperClose = '</a></div>';
         } else {
-          wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses}" style="position:relative;margin-bottom:0 !important; padding:0 !important;"><div tabindex="0" style="width:100%;height:100%;">`;
+          wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses} position-relative mb-0 p-0"><div tabindex="0" class="w-100 h-100">`;
+
+          //          wrapperOpen = `<div class="${mauPrefixClass} item-column d-flex position-relative mb-0 p-0 ${columnClasses}" style="display:none;"><div tabindex="0" class="w-100 h-100">`;
           wrapperClose = '</div></div>';
         }
         wrap(element, wrapperOpen, wrapperClose);
@@ -739,11 +743,13 @@ function mauGallery(opt = {}) {
                     ${carouselInner}
                   </div>
                   ${navigation
-                  ? `<button aria-label="${prevImgBtnLabel}" class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation;">
+                  ? `<button class="carousel-control-prev" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="prev" style="touch-action:manipulation;">
                          <span class="carousel-control-prev-icon mau mg-prev" aria-hidden="true"></span>
+                         <span class="visually-hidden">${prevImgBtnLabel}</span>
                        </button>
-                       <button aria-label="${nextImgBtnLabel}" class="carousel-control-next" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="next" style="touch-action:manipulation;">
+                       <button class="carousel-control-next" type="button" data-bs-target="#${lightboxId}-carousel" data-bs-slide="next" style="touch-action:manipulation;">
                          <span class="carousel-control-next-icon mau mg-next" aria-hidden="true"></span>
+                         <span class="visually-hidden">${nextImgBtnLabel}</span>
                        </button>`
                   : ''
                   }
@@ -805,7 +811,6 @@ function mauGallery(opt = {}) {
         'navigationButtons': `
           .${mauPrefixClass}.mg-next, .${mauPrefixClass}.mg-prev {
             --_nav-btns-delta: calc(${modalArrowSizeRuleValue} * .2);
-            display: block;
             position: absolute;
             bottom: calc(50% - ${modalArrowHalfSizeRuleValue});
             width: ${modalArrowSizeRuleValue};
@@ -829,27 +834,13 @@ function mauGallery(opt = {}) {
           #${lightboxId} .carousel-control-prev, #${lightboxId} .carousel-control-next {
             width: 0;
           }`,
-        'hotfix_a': `
-          .${mauPrefixClass}.item-column {
-            position: relative;
-            margin-bottom: 0 !important;
-            padding: 0;
-          }`,
-        'hotfix_b': `
+        'hackInTheMatrix': `
           .${mauPrefixClass}.item-column::after {
             content: "";
             position: relative;
             z-index: -1000;
             display: block;
             padding-bottom: 100%;
-          }`,
-        'hotfix_c': `
-          .${mauPrefixClass}.${galleryItemClass} {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            padding: .5em;
           }`,
         'navigationButtonsResponsive': `
           @media (max-width: 1000px) {
