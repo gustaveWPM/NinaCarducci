@@ -62,7 +62,8 @@ function mauGallery(opt = {}) {
       'isOnMobile': null,
       'richGalleryItems': null,
       'tab': false,
-      'tabTimeout': null
+      'tabTimeout': null,
+      'imgUrlsCache': new Set()
     },
     'options': mauGallerydefaults,
     'tagsSet': new Set()
@@ -86,6 +87,22 @@ function mauGallery(opt = {}) {
 
     const value = props.options[key];
     return value;
+  }
+
+  function cacheImgUrl(url) {
+    if (url === null || memos('imgUrlsCache').has(url)) {
+      return;
+    }
+    const isValid = (token) => token.indexOf('/') !== -1 || token.indexOf('.') !== -1;
+    if (!isValid(url)) {
+      return;
+    }
+    fetch(url);
+     memos('imgUrlsCache').add(url);
+  }
+
+  function cacheMultipleImgUrls(tokensList) {
+    tokensList.forEach(token => cacheImgUrl(token));
   }
 
   function memos(key = undefined, newValue = undefined) {
@@ -316,13 +333,9 @@ function mauGallery(opt = {}) {
 
         if (isImg && lightBox) {
           wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses} position-relative mb-0 p-0"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''} d-flex w-100 h-100" style="text-decoration:none;color:inherit;">`;
-
-//          wrapperOpen = `<div class="${mauPrefixClass} item-column d-flex position-relative mb-0 p-0 ${columnClasses}" style="display:none;"><a href="#" ${injectModalTrigger} class="mau ${lightBox ? `${modalTriggerClass}` : ''} d-flex w-100 h-100" style="display:none;text-decoration:none;color:inherit;">`;
           wrapperClose = '</a></div>';
         } else {
           wrapperOpen = `<div class="${mauPrefixClass} item-column${columnClasses} position-relative mb-0 p-0"><div tabindex="0" class="w-100 h-100">`;
-
-          //          wrapperOpen = `<div class="${mauPrefixClass} item-column d-flex position-relative mb-0 p-0 ${columnClasses}" style="display:none;"><div tabindex="0" class="w-100 h-100">`;
           wrapperClose = '</div></div>';
         }
         wrap(element, wrapperOpen, wrapperClose);
@@ -395,89 +408,116 @@ function mauGallery(opt = {}) {
     }
 
     function filterByTag(element) {
-      function forceReplayAnim() {
-        const galleryItemsRowId = options('galleryItemsRowId');
+      function process() {
+        let tag = null;
+        let activeElementOldTop = null;
         const mauPrefixClass = options('mauPrefixClass');
-        const rootNode = document.querySelector(`.${mauPrefixClass}#${galleryItemsRowId}`);
 
-        if (!isOnMobile()) {
-          const oldAnimation = rootNode.style.animation;
-          const oldDisplay = rootNode.style.display;
-          rootNode.style.animation = 'none';
-          rootNode.style.display = 'none';
-          rootNode.offsetHeight;
-          rootNode.style.display = oldDisplay;
-          rootNode.style.animation = oldAnimation;
+        function forceReplayAnim() {
+          const galleryItemsRowId = options('galleryItemsRowId');
+          const rootNode = document.querySelector(`.${mauPrefixClass}#${galleryItemsRowId}`);
+
+          if (!isOnMobile()) {
+            const oldAnimation = rootNode.style.animation;
+            const oldDisplay = rootNode.style.display;
+            rootNode.style.animation = 'none';
+            rootNode.style.display = 'none';
+            rootNode.offsetHeight;
+            rootNode.style.display = oldDisplay;
+            rootNode.style.animation = oldAnimation;
+          }
+
+          const oldAnimationName = rootNode.style.animationName;
+          rootNode.style.animationName = 'none';
+          window.requestAnimationFrame(() => rootNode.style.animationName = oldAnimationName);
         }
 
-        const oldAnimationName = rootNode.style.animationName;
-        rootNode.style.animationName = 'none';
-        window.requestAnimationFrame(() => rootNode.style.animationName = oldAnimationName);
+        function updateGalleryComponent() {
+          const richGalleryItems = getRichGalleryItems(lazy = false);
+          const filtersActiveTagId = options('filtersActiveTagId');
+          const activeTag = document.querySelector(`.${mauPrefixClass}#${filtersActiveTagId}`);
+          tag = element.dataset.imagesToggle;
+    
+          activeTag.classList.remove('active');
+          activeTag.removeAttribute('id');
+          element.classList.add(mauPrefixClass, 'active');
+          element.id = filtersActiveTagId;
+          if (options("tagsPosition") === 'bottom') {
+            activeElementOldTop = document.activeElement.getBoundingClientRect().top;
+          }
+    
+          richGalleryItems.forEach(richItem => {
+            if (tag === 'all' || richItem.item.dataset.galleryTag === tag) {
+              richItem.column.style.display = null;
+            } else {
+              richItem.column.style.display = 'none';
+            }
+    
+            if (options("tagsPosition") === 'top') {
+              moveCameraToSavedPosition();
+            }
+          });
+          return activeElementOldTop;
+        }
+
+        function handleCameraSideEffects() {
+          if (options("tagsPosition") === 'bottom') {
+            const activeElementTop = document.activeElement.getBoundingClientRect().top;
+            const activeElementTopsDistance = Math.abs(activeElementOldTop - activeElementTop);
+    
+            if (activeElementTopsDistance >= 100) {
+              const oldPaddingBottom = document.activeElement.style.paddingBottom;
+              document.activeElement.style.paddingBottom = '25px';
+              clearSaveCurrentCameraPositionSideEffects();
+              document.activeElement.scrollIntoView(false);
+              document.activeElement.style.paddingBottom = oldPaddingBottom;
+            }
+          }
+        }
+
+        function updateModalCarouselComponent() {
+          const modalCarousel = getModalCarouselElement();
+          const galleryItemClass = options('galleryItemClass');
+          const modalCarouselColumns = modalCarousel.querySelectorAll(`.${mauPrefixClass}.modal-${galleryItemClass}`);
+          modalCarouselColumns.forEach(column => {
+            const item = column.querySelector('img');
+
+            if (tag === 'all' || item.dataset.galleryTag === tag) {
+              item.removeAttribute('loading');
+              if (item.parentNode.tagName === 'PICTURE') {
+                const sources = item.parentNode.querySelectorAll('source');
+                sources.forEach(source => {
+                  const sourcesString = source.srcset;
+                  const sourcesTokens = sourcesString ? sourcesString.split(/[\s,]+/) : null;
+                  cacheMultipleImgUrls(sourcesTokens);
+                });
+              } else {
+                const sourcesString = item.srcset;
+                const sourcesTokens = sourcesString ? sourcesString.split(/[\s,]+/) : null;
+                cacheMultipleImgUrls(sourcesTokens);
+              }
+              cacheImgUrl(item.src);
+              column.classList.add('carousel-item');
+              column.style.display = null;
+            } else {
+              item.setAttribute('loading', 'lazy');
+              column.classList.remove('carousel-item');
+              column.style.display = 'none';
+            }
+          });
+        }
+
+        saveCurrentCameraPosition();
+        forceReplayAnim();
+        updateGalleryComponent();
+        handleCameraSideEffects();
+        updateModalCarouselComponent();
       }
 
       if (element.id === options('filtersActiveTagId')) {
         return;
       }
-
-      saveCurrentCameraPosition();
-      forceReplayAnim();
-      const richGalleryItems = getRichGalleryItems(lazy = false);
-      const mauPrefixClass = options('mauPrefixClass');
-      const filtersActiveTagId = options('filtersActiveTagId');
-      const activeTag = document.querySelector(`.${mauPrefixClass}#${filtersActiveTagId}`);
-      const tag = element.dataset.imagesToggle;
-
-      activeTag.classList.remove('active');
-      activeTag.removeAttribute('id');
-      element.classList.add(mauPrefixClass, 'active');
-      element.id = filtersActiveTagId;
-      let activeElementOldTop = null;
-
-      if (options("tagsPosition") === 'bottom') {
-        activeElementOldTop = document.activeElement.getBoundingClientRect().top;
-      }
-
-      richGalleryItems.forEach(richItem => {
-        if (tag === 'all' || richItem.item.dataset.galleryTag === tag) {
-          richItem.column.style.display = null;
-        } else {
-          richItem.column.style.display = 'none';
-        }
-
-        if (options("tagsPosition") === 'top') {
-          moveCameraToSavedPosition();
-        }
-      });
-
-      const modalCarousel = getModalCarouselElement();
-      const galleryItemClass = options('galleryItemClass');
-      const modalCarouselColumns = modalCarousel.querySelectorAll(`.${mauPrefixClass}.modal-${galleryItemClass}`);
-      modalCarouselColumns.forEach(column => {
-        const item = column.querySelector('img');
-
-        if (tag === 'all' || item.dataset.galleryTag === tag) {
-          item.removeAttribute('loading');
-          column.classList.add('carousel-item');
-          column.style.display = null;
-        } else {
-          item.setAttribute('loading', 'lazy');
-          column.classList.remove('carousel-item');
-          column.style.display = 'none';
-        }
-      });
-
-      if (options("tagsPosition") === 'bottom') {
-        const activeElementTop = document.activeElement.getBoundingClientRect().top;
-        const activeElementTopsDistance = Math.abs(activeElementOldTop - activeElementTop);
-
-        if (activeElementTopsDistance >= 100) {
-          const oldPaddingBottom = document.activeElement.style.paddingBottom;
-          document.activeElement.style.paddingBottom = '25px';
-          clearSaveCurrentCameraPositionSideEffects();
-          document.activeElement.scrollIntoView(false);
-          document.activeElement.style.paddingBottom = oldPaddingBottom;
-        }
-      }
+      process();
     }
 
     function showItemTags(gallery) {
