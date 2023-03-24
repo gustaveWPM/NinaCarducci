@@ -906,7 +906,7 @@ function mauGallery(opt = {}) {
         }
         Object.assign(rules, mobileRules);
       }
-      Object.keys(rules).reverse().forEach(key => style.sheet.insertRule(rules[key].replace(/ +/g, ' '), 0));
+      Object.keys(rules).reverse().forEach(key => style.sheet.insertRule(rules[key].replace(/[\s,]+/g, ' ').trim(), 0));
     }
 
     function process() {
