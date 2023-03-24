@@ -916,9 +916,9 @@ function mauGallery(opt = {}) {
       const galleryItemClass = options('galleryItemClass');
       const lightBox = options('lightBox');
       const target = document.querySelector(`#${galleryRootNodeId}`);
+
       appendCSS();
       createRowWrapper(target);
-
       target.querySelectorAll(`.${mauPrefixClass}.${galleryItemClass}`).forEach(item => {
         if (item.parentNode.tagName === 'PICTURE') {
           item = item.parentNode;
