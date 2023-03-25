@@ -429,10 +429,7 @@ input[type=submit] {
   padding: .5em 1em
 }
 
-#a-propos,
-#contact,
-#galerie,
-#services {
+.virtual-anchor {
   position: relative;
   height: 0;
   width: 0;
@@ -441,6 +438,7 @@ input[type=submit] {
   min-width: 0;
   max-width: 0
 }
+
 
 #a-propos {
   bottom: 100px

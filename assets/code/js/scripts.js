@@ -22,10 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function generateForceToCollapseNavbarEvents() {
-    function skipCollapse() {
-      const hamburgerWidthPxBreakpoint = 767;
-      return window.innerWidth > hamburgerWidthPxBreakpoint;
-    }
+    const hamburgerWidthPxBreakpoint = 767;
+    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    const skipCollapse = () => isFirefox || window.innerWidth > hamburgerWidthPxBreakpoint;
 
     function doGenerate() {
       const forceToCollapseElements = document.querySelectorAll('.navbar .nav-item .nav-link, .trigger-navbar-collapse-onclick');
