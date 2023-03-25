@@ -48,6 +48,17 @@ body {
   -webkit-tap-highlight-color: transparent
 }
 
+[role=button] {
+  cursor: pointer;
+}
+
+button:not(:disabled),
+[type=button]:not(:disabled),
+[type=reset]:not(:disabled),
+[type=submit]:not(:disabled) {
+  cursor: pointer;
+}
+
 p {
   margin-top: 0;
   margin-bottom: 1rem
