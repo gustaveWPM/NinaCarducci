@@ -1,4 +1,4 @@
-name: Auto Minify
+name: Auto Minify and Deploy
 
 on:
   push:
