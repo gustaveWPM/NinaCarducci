@@ -476,6 +476,10 @@ function mauGallery(opt = {}) {
         }
 
         function updateModalCarouselComponent() {
+          if (!options('lightBox')) {
+            return;
+          }
+
           const modalCarousel = getModalCarouselElement();
           const galleryItemClass = options('galleryItemClass');
           const modalCarouselColumns = modalCarousel.querySelectorAll(`.${mauPrefixClass}.modal-${galleryItemClass}`);
