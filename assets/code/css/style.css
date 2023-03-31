@@ -273,11 +273,10 @@ ul {
 
 .mau.nav-link,
 .mau.nav-link:hover {
-  color: #000;
   transition: none
 }
 
-.mau#active-tag {
+.nav-pills .mau.nav-link.active {
   color: #fff;
   background-color: #666130;
   border-radius: 0

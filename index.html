@@ -22,9 +22,7 @@
   <script type="application/ld+json">{"@context":"http://schema.org/","@graph":[{"@type":"WebSite","@id":"https://nina-carducci.github.io/#website","url":"https://nina-carducci.github.io/","name":"Nina Carducci","description":"Photographe freelance","inLanguage":"fr-FR"},{"@type":"WebPage","@id":"https://nina-carducci.github.io/#webpage","url":"https://nina-carducci.github.io/","name":"Nina Carducci - Photographe | Page d’accueil","isPartOf":{"@id":"https://nina-carducci.github.io/#website"},"description":"Réalisez vos Shootings, Retouches et Albums photos avec Nina Carducci. Découvrez ici son portfolio : spectacles, mariages, portraits, entrepreneuriat…","inLanguage":"fr-FR","potentialAction":[{"@type":"ReadAction","target":["https://nina-carducci.github.io/"]}]},{"@type":"ProfessionalService","currenciesAccepted":"EUR","openingHours":"Mo,Tu,We,Th,Fr 10:00-19:00","paymentAccepted":"Cash, Credit Card","priceRange":"50-400 €","address":{"@type":"PostalAddress","addressCountry":"FR","addressLocality":"Bordeaux, France","postalCode":"F-33200","streetAddress":"68 avenue Alsace-Lorraine"},"areaServed":{"@type":"AdministrativeArea","name":["Île de France","Bordeaux"]},"email":"ninacarducci@openclassrooms.com","legalName":"Nina Carducci","numberOfEmployees":{"@type":"QuantitativeValue","value":1},"slogan":"Capturez vos moments les plus précieux et gardez un souvenir impérissable.","telephone":"+33556677889","description":"Photographe freelance","name":"Nina Carducci","url":"https://nina-carducci.github.io/"}]}</script>
 
   <link rel="stylesheet" href="./assets/code/css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin defer></script>
-  <script src="./assets/code/js/maugallery.js" defer></script>
-  <script src="./assets/code/js/scripts.js" defer></script>
+  <script src="./assets/code/js/maugalleryLauncher.js" async defer></script>
 </head>
 
 <body>
@@ -121,51 +119,51 @@
     <section id="gallery-section">
       <h2 class="title">Portfolio</h2>
       <div class="container py-3">
-        <div id="maugallery" class="gallery d-block" style="display: none;">
+        <div id="maugallery" class="gallery">
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/concerts/aaron-paul-concert.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/concerts/aaron-paul-concert.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/concerts/aaron-paul-concert.webp" alt="Photo de concert : Aaron Paul" data-gallery-tag="Concerts" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/concerts/aaron-paul-concert.webp" alt="Photo de concert : Aaron Paul" data-gallery-tag="Concerts" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/entreprises/ali-morshedlou-entrepreneur.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/entreprises/ali-morshedlou-entrepreneur.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/entreprises/ali-morshedlou-entrepreneur.webp" alt="Photo d'entreprise : Ali Morshedlou" data-gallery-tag="Entreprises" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/entreprises/ali-morshedlou-entrepreneur.webp" alt="Photo d'entreprise : Ali Morshedlou" data-gallery-tag="Entreprises" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/entreprises/jason-goodman-entreprise.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/entreprises/jason-goodman-entreprise.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/entreprises/jason-goodman-entreprise.webp" alt="Photo d'entreprise : Jason Goodman" data-gallery-tag="Entreprises" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/entreprises/jason-goodman-entreprise.webp" alt="Photo d'entreprise : Jason Goodman" data-gallery-tag="Entreprises" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/mariages/hannah-busing-mariage.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/mariages/hannah-busing-mariage.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/mariages/hannah-busing-mariage.webp" alt="Photo de mariage : Hannah Busing" data-gallery-tag="Mariages" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/mariages/hannah-busing-mariage.webp" alt="Photo de mariage : Hannah Busing" data-gallery-tag="Mariages" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/portraits/ade-tunji-portrait.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/portraits/ade-tunji-portrait.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/portraits/ade-tunji-portrait.webp" alt="Photo portrait : Ade Tunji" data-gallery-tag="Portraits" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/portraits/ade-tunji-portrait.webp" alt="Photo portrait : Ade Tunji" data-gallery-tag="Portraits" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/mariages/jakob-owens-mariage.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/mariages/jakob-owens-mariage.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/mariages/jakob-owens-mariage.webp" alt="Photo de mariage : Jakob Owens" data-gallery-tag="Mariages" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/mariages/jakob-owens-mariage.webp" alt="Photo de mariage : Jakob Owens" data-gallery-tag="Mariages" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/portraits/nino-van-prattenburg-photo-portrait.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/portraits/nino-van-prattenburg-photo-portrait.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/portraits/nino-van-prattenburg-photo-portrait.webp" alt="Photo portrait : Nino Van Prattenburg" data-gallery-tag="Portraits" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/portraits/nino-van-prattenburg-photo-portrait.webp" alt="Photo portrait : Nino Van Prattenburg" data-gallery-tag="Portraits" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/concerts/austin-neill-spectacle.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/concerts/austin-neill-spectacle.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/concerts/austin-neill-spectacle.webp" alt="Photo de concert : Austin Neill" data-gallery-tag="Concerts" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/concerts/austin-neill-spectacle.webp" alt="Photo de concert : Austin Neill" data-gallery-tag="Concerts" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
           <picture>
             <source srcset="./assets/images/mobile/portrait/gallery/entreprises/mateus-campos-felipe-startup.webp" media="(max-width: 480px)">
             <source srcset="./assets/images/mobile/landscape/gallery/entreprises/mateus-campos-felipe-startup.webp" media="(max-width: 1000px)">
-            <img src="./assets/images/desktop/gallery/entreprises/mateus-campos-felipe-startup.webp" alt="Photo d'entreprise : Mateus Campos Felipe" data-gallery-tag="Entreprises" class="mau gallery-item position-absolute w-100 h-100 d-block p-2" style="display:none;width:100%;height:100%;object-fit:cover;" loading="lazy" width="440" height="440">
+            <img src="./assets/images/desktop/gallery/entreprises/mateus-campos-felipe-startup.webp" alt="Photo d'entreprise : Mateus Campos Felipe" data-gallery-tag="Entreprises" class="mau gallery-item" style="display:none;object-fit:cover;" loading="lazy" width="440" height="440">
           </picture>
         </div>
         <div class="quote">
