@@ -155,7 +155,7 @@ ul {
 }
 
 .top-header nav {
-  min-height: 100px
+  min-height: var(--navbar-height);
 }
 
 .navbar-menu li {

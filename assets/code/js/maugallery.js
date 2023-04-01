@@ -5,7 +5,7 @@ let _mauGalleryManager = {
     'lightboxId': 'myAwesomeLightbox',
     'prevImgButtonLabel': 'Image précédente',
     'nextImgButtonLabel': 'Image suivante',
-    'disableFiltersButtonLabel': 'Tous',
+    'disableFiltersButtonLabel': 'Tout',
     'modalTriggerClass': 'modal-trigger',
     'galleryItemClass': 'gallery-item',
     'modalWrapperClass': 'modal-component',
@@ -111,8 +111,8 @@ Object.assign(_mauGalleryManager, {
         this.screenOrientation = null;
       }
 
-      isOnMobile() {
-        if (this.onMobile === null) {
+      isOnMobile(lazy = true) {
+        if (!lazy || this.onMobile === null) {
           const userAgent = navigator.userAgent.toLowerCase();
           this.onMobile = userAgent.match(/(ipad)|(iphone)|(ipod)|(android)|(webos)|(blackberry)|(tablet)|(kindle)|(playbook)|(silk)|(windows phone)/i);
         }
@@ -343,7 +343,7 @@ Object.assign(_mauGalleryManager, {
         }
 
         const relatedGalleryId = relatedGalleryInstance.id;
-        const modalCarousel = _mauGalleryManager['Modal_Instance'].getModalCarouselElement();
+        const modalCarousel = this.getModalCarouselElement();
         const galleryItemClass = _mauGalleryManager.options('galleryItemClass');
         const mauPrefixClass = _mauGalleryManager.options('mauPrefixClass');
         const modalCarouselColumns = modalCarousel.querySelectorAll(`.${mauPrefixClass}.modal-${galleryItemClass}`);
@@ -384,7 +384,7 @@ Object.assign(_mauGalleryManager, {
         const modal = this.getModalElement();
         const modalImgs = modal.querySelectorAll('img');
         for (const modalImg of modalImgs) {
-          if (modalImg.getAttribute('src') === providedImg.getAttribute('src')) {
+          if (modalImg.dataset.relatedGalleryId === providedImg.dataset.relatedGalleryId && modalImg.getAttribute('src') === providedImg.getAttribute('src')) {
             this.setActiveModalCarouselElement(modalImg);
             break;
           }
@@ -786,7 +786,7 @@ Object.assign(_mauGalleryManager, {
             window.scrollTo({
               top: y,
               left: x,
-              behavior: 'auto'
+              behavior: 'smooth'
             });
           }, latency);
         }
@@ -795,10 +795,8 @@ Object.assign(_mauGalleryManager, {
         if (invalidTargetPos) {
           return;
         }
-
-        for (let latency = 0; latency < 25; latency++) {
-          doMoveCamera(x, y, latency);
-        }
+        const latencyToCounterpartScrollSmoothBehavior = 25;
+        doMoveCamera(x, y, latencyToCounterpartScrollSmoothBehavior);
       }
 
       saveActiveElement() {
@@ -834,12 +832,12 @@ Object.assign(_mauGalleryManager, {
           const screenOrientation = mobileInstance.getCurrentScreenOrientation();
 
           if (screenOrientation && screenOrientation != mobileInstance.getSavedScreenOrientation()) {
-            /* ToDo: fix intelligent scroll here
+            /* ToDo: fix intelligent scroll here (try to type this lib and then transpile it with terabytes of polyfills before any manual check)
                const absoluteY = _mauGalleryManager.DOM_Manipulations_Instance.getAbsoluteElementY(activeElement);
                alert(`test: ${absoluteY} ;; ${activeElement}`);
-               _mauGalleryManager.Camera_Instance.moveCamera(null, absoluteY); */
+               this.moveCamera(null, absoluteY); */
           }
-          _mauGalleryManager.Camera_Instance.moveCamera(this.memos('curX'), this.memos('curY'));
+          this.moveCamera(this.memos('curX'), this.memos('curY'));
         } else if (activeElement) {
           const DOM_Manipulations_Instance = _mauGalleryManager['DOM_Manipulations_Instance'];
           let preventScroll = true;
@@ -912,7 +910,7 @@ Object.assign(_mauGalleryManager, {
               }
 
               if (relatedGalleryInstance.options('tagsPosition') === 'top') {
-                _mauGalleryManager['Camera_Instance'].moveCameraToSavedPosition();
+                _mauGalleryManager['Camera_Instance'].moveCameraToSavedPosition(document.activeElement);
               }
             });
             return activeElementOldTop;
@@ -920,18 +918,11 @@ Object.assign(_mauGalleryManager, {
 
           function handleCameraSideEffects() {
             if (relatedGalleryInstance.options('tagsPosition') === 'bottom') {
-              const activeElementTop = document.activeElement.getBoundingClientRect().top;
-              const activeElementTopsDistance = Math.abs(activeElementOldTop - activeElementTop);
-
-              if (activeElementTopsDistance >= 100) {
-                const oldPaddingBottom = document.activeElement.style.paddingBottom;
-                document.activeElement.style.paddingBottom = '25px';
-                document.activeElement.scrollIntoView(false);
-                document.activeElement.style.paddingBottom = oldPaddingBottom;
-              }
+              document.activeElement.scrollIntoView(false);
             }
           }
 
+          _mauGalleryManager['Camera_Instance'].saveActiveElement();
           _mauGalleryManager['Camera_Instance'].saveCurrentCameraPosition();
           forceReplayAnim();
           updateGalleryComponent();
