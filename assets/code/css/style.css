@@ -419,7 +419,8 @@ form textarea {
   margin-bottom: 20px
 }
 
-input[type]:not([type=submit]), textarea {
+input[type]:not([type=submit]),
+textarea {
   text-indent: .5em
 }
 
