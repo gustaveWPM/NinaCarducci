@@ -1616,3 +1616,13 @@ textarea {
   --bs-alert-bg: #cff4fc;
   --bs-alert-border-color: #b6effb;
 }
+
+.alert-danger {
+  --bs-alert-color: #842029;
+  --bs-alert-bg: #f8d7da;
+  --bs-alert-border-color: #f5c2c7;
+}
+
+.text-center {
+  text-align: center !important;
+}
